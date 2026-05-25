@@ -1,0 +1,359 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #f7f9f7;
+  --card: #f1f4f1;
+  --border: #e2e8e3;
+  --text: #2c2c2c;
+  --muted: #5f6b63;
+  --accent: #2e8b57;
+}
+
+html.dark {
+  color-scheme: dark;
+  --bg: #121715;
+  --surface: #1a211e;
+  --card: #1e2622;
+  --border: #2f3a34;
+  --text: #f3f5f3;
+  --muted: #b7c1bb;
+  --accent: #4db77a;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+html.dark .bg-white {
+  background-color: var(--card) !important;
+}
+
+html.dark .bg-\[\#F7F9F7\] {
+  background-color: var(--surface) !important;
+}
+
+html.dark .bg-\[\#F1F4F1\] {
+  background-color: var(--card) !important;
+}
+
+html.dark .bg-\[\#E2E8E3\] {
+  background-color: #2f3a34 !important;
+}
+
+html.dark .text-\[\#2C2C2C\],
+html.dark .text-\[\#5F6B63\] {
+  color: var(--text) !important;
+}
+
+html.dark .border-\[\#E2E8E3\] {
+  border-color: var(--border) !important;
+}
+
+html.dark .bg-white\/80 {
+  background-color: rgba(30, 38, 34, 0.8) !important;
+}
+
+html.dark .bg-white\/40 {
+  background-color: rgba(30, 38, 34, 0.4) !important;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Additional dark mode overrides for better consistency */
+html.dark .shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000),
+    var(--tw-shadow);
+}
+
+/* Form elements in dark mode */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: var(--card);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: var(--accent);
+  outline: none;
+  ring-color: var(--accent);
+}
+
+/* Button hover states in dark mode */
+html.dark button:hover:not(:disabled) {
+  transition: all 0.2s ease;
+}
+
+/* Scrollbar for webkit browsers in dark mode */
+html.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: var(--surface);
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Selection color in dark mode */
+html.dark ::selection {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* Placeholder text in dark mode */
+html.dark ::placeholder {
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+/* Card and surface shadows in dark mode */
+html.dark .card,
+html.dark .surface {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+
+/* Modal overlays in dark mode */
+html.dark .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Loading skeletons in dark mode */
+html.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--card) 25%,
+    var(--surface) 50%,
+    var(--card) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* System theme preference support */
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) {
+    color-scheme: dark;
+    --bg: #121715;
+    --surface: #1a211e;
+    --card: #1e2622;
+    --border: #2f3a34;
+    --text: #f3f5f3;
+    --muted: #b7c1bb;
+    --accent: #4db77a;
+  }
+}
+
+/* Slide in animation for mobile sidebar */
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+/* Optional: Slide out animation */
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-slide-out {
+  animation: slideOut 0.3s ease-out forwards;
+}
+
+/* Mobile sidebar specific dark mode improvements */
+html.dark .mobile-sidebar-backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Improve touch targets in dark mode for mobile */
+@media (max-width: 768px) {
+  html.dark button,
+  html.dark .nav-item {
+    -webkit-tap-highlight-color: rgba(77, 183, 122, 0.2);
+  }
+}
+
+/* Smooth backdrop blur transition */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+  transition: backdrop-filter 0.3s ease;
+}
+
+/* Modal Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-fade-out {
+  animation: fadeOut 0.2s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+}
+
+.animate-scale-out {
+  animation: scaleOut 0.2s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-slide-out-right {
+  animation: slideOutRight 0.3s ease-out;
+}
+
+/* Custom scrollbar for modal content */
+.modal-content {
+  scrollbar-width: thin;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+/* Focus styles for better accessibility */
+.modal-focus-visible:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

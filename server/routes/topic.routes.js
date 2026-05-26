@@ -2,6 +2,7 @@ import express from "express";
 import {
   createTopic,
   getTopics,
+  getTopicsAdmin,
   updateTopic,
   deleteTopic,
 } from "../controllers/topic.controller.js";
@@ -14,6 +15,8 @@ const router = express.Router();
 router.get("/", getTopics);
 
 // ADMIN ONLY
+router.get("/admin", protect, adminOnly, getTopicsAdmin);
+router.get("/admin/list", protect, adminOnly, getTopicsAdmin);
 router.post("/", protect, adminOnly, createTopic);
 router.put("/:id", protect, adminOnly, updateTopic);
 router.delete("/:id", protect, adminOnly, deleteTopic);

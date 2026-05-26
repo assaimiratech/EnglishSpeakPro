@@ -10,8 +10,6 @@ const Landing = () => {
       <HeroSection />
       <FeatureSection />
       <PricingSection />
-      <TestimonialSection />
-      <CTASection />
     </div>
   );
 };

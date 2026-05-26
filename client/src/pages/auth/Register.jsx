@@ -29,6 +29,8 @@ const Register = () => {
     email: "",
     password: "",
     whatsapp: "",
+    country: "",
+    city: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -248,6 +250,39 @@ const Register = () => {
                   />
                 </div>
               </div>
+              {/* Country Field */}
+              <div>
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1.5 transition-colors duration-200">
+                  Country
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="country"
+                    placeholder="Country"
+                    value={form.country}
+                    onChange={handleChange}
+                    className="w-full pl-3 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white/50 dark:bg-[var(--card)]/50 text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
+                  />
+                </div>
+              </div>
+
+              {/* City Field */}
+              <div>
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1.5 transition-colors duration-200">
+                  City
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="City"
+                    value={form.city}
+                    onChange={handleChange}
+                    className="w-full pl-3 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white/50 dark:bg-[var(--card)]/50 text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
+                  />
+                </div>
+              </div>
 
               {/* Terms and Conditions */}
               <label className="flex items-start gap-2 cursor-pointer">
@@ -309,35 +344,6 @@ const Register = () => {
                 </span>
               </div>
             </div>
-
-            {/* Benefits */}
-            <div className="bg-gradient-to-r from-[#F1F4F1] to-white dark:from-[var(--surface)] dark:to-[var(--card)] rounded-xl p-3 mb-4 transition-colors duration-200">
-              <div className="flex items-center gap-2 mb-2">
-                <FiZap className="w-4 h-4 text-yellow-500" />
-                <span className="text-xs font-medium text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
-                  Free account includes:
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-xs text-[#5F6B63] dark:text-[var(--muted)]">
-                <div className="flex items-center gap-1">
-                  <FiCheckCircle className="w-3 h-3 text-[#2E8B57] dark:text-[var(--accent)]" />
-                  <span>5 free lessons</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiCheckCircle className="w-3 h-3 text-[#2E8B57] dark:text-[var(--accent)]" />
-                  <span>Basic speaking practice</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiCheckCircle className="w-3 h-3 text-[#2E8B57] dark:text-[var(--accent)]" />
-                  <span>Progress tracking</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <FiStar className="w-3 h-3 text-yellow-500" />
-                  <span>Upgrade anytime</span>
-                </div>
-              </div>
-            </div>
-
             {/* Login Link */}
             <p className="text-center text-sm text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
               Already have an account?{" "}
@@ -349,29 +355,6 @@ const Register = () => {
                 <FiArrowRight className="inline ml-1 w-3 h-3" />
               </Link>
             </p>
-          </div>
-        </motion.div>
-
-        {/* Trust Badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-center gap-4 mt-6"
-        >
-          <div className="flex items-center gap-1 text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-            <FiShield className="w-3 h-3 text-[#8FAF9A] dark:text-[var(--accent)]" />
-            <span>Secure Registration</span>
-          </div>
-          <div className="w-px h-3 bg-[#E2E8E3] dark:bg-[var(--border)]" />
-          <div className="flex items-center gap-1 text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-            <FiCheckCircle className="w-3 h-3 text-[#2E8B57] dark:text-[var(--accent)]" />
-            <span>Data Protected</span>
-          </div>
-          <div className="w-px h-3 bg-[#E2E8E3] dark:bg-[var(--border)]" />
-          <div className="flex items-center gap-1 text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-            <FiUserPlus className="w-3 h-3 text-[#8FAF9A] dark:text-[var(--accent)]" />
-            <span>Free to Join</span>
           </div>
         </motion.div>
       </motion.div>

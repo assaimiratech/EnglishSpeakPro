@@ -4,12 +4,13 @@ import Lesson from "../models/Lesson.js";
 // CREATE TOPIC (ADMIN ONLY)
 export const createTopic = async (req, res) => {
   try {
-    const { title, description, isPremium, order } = req.body;
+    const { title, description, isPremium, isPublished, order } = req.body;
 
     const topic = await Topic.create({
       title,
       description,
       isPremium,
+      isPublished,
       order,
     });
 
@@ -20,6 +21,51 @@ export const createTopic = async (req, res) => {
 };
 
 export const getTopics = async (req, res) => {
+  try {
+    const topics = await Topic.aggregate([
+      {
+        $match: {
+          isPublished: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "lessons",
+          let: { topicId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$topicId", "$$topicId"] },
+                    { $eq: ["$isPublished", true] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "lessons",
+        },
+      },
+      {
+        $addFields: {
+          lessonCount: { $size: "$lessons" },
+        },
+      },
+      {
+        $project: {
+          lessons: 0,
+        },
+      },
+    ]);
+
+    res.json(topics);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getTopicsAdmin = async (req, res) => {
   try {
     const topics = await Topic.aggregate([
       {
@@ -63,6 +109,7 @@ export const updateTopic = async (req, res) => {
   try {
     const topic = await Topic.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      runValidators: true,
     });
 
     res.json(topic);

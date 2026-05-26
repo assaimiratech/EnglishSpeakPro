@@ -2,6 +2,7 @@ import express from "express";
 import {
   createLesson,
   getLessonsByTopic,
+  getPublishedLessons,
   getAllLessons,
   updateLesson,
   deleteLesson,
@@ -13,16 +14,24 @@ import { upload } from "../middleware/upload.middleware.js";
 
 const router = express.Router();
 
-// PUBLIC
-router.get("/", getAllLessons);
-router.get("/:topicId", getLessonsByTopic);
+/* =========================
+   PUBLIC ROUTES
+========================= */
+router.get("/", getPublishedLessons);
+router.get("/topic/:topicId", getLessonsByTopic);
 
-// ADMIN ONLY
+/* =========================
+   ADMIN ROUTES
+========================= */
+router.get("/admin", protect, adminOnly, getAllLessons);
+
 router.post("/", protect, adminOnly, createLesson);
 router.put("/:id", protect, adminOnly, updateLesson);
 router.delete("/:id", protect, adminOnly, deleteLesson);
 
-// 🔥 AUDIO UPLOAD ROUTE (NEW)
+/* =========================
+   AUDIO UPLOAD
+========================= */
 router.post(
   "/upload/audio",
   protect,
@@ -30,4 +39,5 @@ router.post(
   upload.single("audio"),
   uploadAudio,
 );
+
 export default router;

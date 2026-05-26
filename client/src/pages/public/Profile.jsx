@@ -16,6 +16,7 @@ import {
   FiTrendingUp,
   FiClock,
   FiZap,
+  FiMapPin,
 } from "react-icons/fi";
 import { getMe, updateProfile, changePassword } from "../../api/auth.api";
 
@@ -30,6 +31,8 @@ const Profile = () => {
     name: "",
     email: "",
     whatsapp: "",
+    country: "",
+    city: "",
   });
 
   const [passwordForm, setPasswordForm] = useState({
@@ -55,6 +58,8 @@ const Profile = () => {
         name: userData?.name || "",
         email: userData?.email || "",
         whatsapp: userData?.whatsapp || "",
+        country: userData?.country || "",
+        city: userData?.city || "",
       });
     } catch (err) {
       console.log(err);
@@ -286,6 +291,22 @@ const Profile = () => {
                       </p>
                     </div>
                   </div>
+
+                  <div className="flex items-start gap-3 p-3 bg-[#F7F9F7] dark:bg-[var(--surface)] rounded-xl transition-colors duration-200">
+                    <div className="w-8 h-8 rounded-lg bg-[#8FAF9A]/10 dark:bg-[var(--accent)]/20 flex items-center justify-center">
+                      <FiMapPin className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#5F6B63] dark:text-[var(--muted)]">
+                        Location
+                      </p>
+                      <p className="text-base font-semibold text-[#2C2C2C] dark:text-[var(--text)]">
+                        {user.country && user.city
+                          ? `${user.city}, ${user.country}`
+                          : user.country || user.city || "Not provided"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Edit Button */}
@@ -359,6 +380,43 @@ const Profile = () => {
                       }
                       className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
                       placeholder="+94 XX XXX XXXX"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                    Country
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={profileForm.country}
+                      onChange={(e) =>
+                        setProfileForm({
+                          ...profileForm,
+                          country: e.target.value,
+                        })
+                      }
+                      className="w-full pl-3 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
+                      placeholder="Country"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                    City
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={profileForm.city}
+                      onChange={(e) =>
+                        setProfileForm({ ...profileForm, city: e.target.value })
+                      }
+                      className="w-full pl-3 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
+                      placeholder="City"
                     />
                   </div>
                 </div>

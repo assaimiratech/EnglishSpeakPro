@@ -23,7 +23,7 @@ import { getLessonsByTopic, markLessonComplete } from "../../api/lessons.api";
 const getAudioUrl = (url) => {
   if (!url) return "";
   if (url.startsWith("http")) return url;
-  const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/";
   return `${base}${url}`;
 };
 
@@ -212,20 +212,6 @@ const Lessons = () => {
       {/* Decorative Background */}
       <div className="fixed top-0 right-0 w-96 h-96 bg-[#8FAF9A]/5 dark:bg-[var(--accent)]/5 rounded-full blur-3xl -z-10 pointer-events-none" />
       <div className="fixed bottom-0 left-0 w-80 h-80 bg-[#2E8B57]/5 dark:bg-[var(--accent)]/5 rounded-full blur-3xl -z-10 pointer-events-none" />
-
-      {/* Back Button */}
-      <div className="sticky top-0 z-20 bg-white/80 dark:bg-[var(--bg)]/80 backdrop-blur-md border-b border-[#E2E8E3] dark:border-[var(--border)]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3">
-          <button
-            onClick={() => navigate("/topics")}
-            className="flex items-center gap-2 text-sm text-[#5F6B63] dark:text-[var(--muted)] hover:text-[#2E8B57] dark:hover:text-[var(--accent)] transition-colors duration-200 group"
-          >
-            <FiArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
-            <span>Back to Topics</span>
-          </button>
-        </div>
-      </div>
-
       <div
         ref={contentRef}
         className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-8 lg:py-10"

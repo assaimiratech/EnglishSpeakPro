@@ -18,6 +18,7 @@ import {
   FiInfo,
   FiLoader,
   FiSave,
+  FiMapPin,
 } from "react-icons/fi";
 import { TfiCrown } from "react-icons/tfi";
 import {
@@ -40,6 +41,8 @@ const Users = () => {
     email: "",
     password: "",
     whatsapp: "",
+    country: "",
+    city: "",
   });
 
   useEffect(() => {
@@ -101,7 +104,14 @@ const Users = () => {
       const created = await createUser({ ...newUser, role: "user" });
       setUsers([created, ...users]);
       setShowCreate(false);
-      setNewUser({ name: "", email: "", password: "", whatsapp: "" });
+      setNewUser({
+        name: "",
+        email: "",
+        password: "",
+        whatsapp: "",
+        country: "",
+        city: "",
+      });
       showToast(`User "${created.name}" created successfully`, "success");
     } catch (err) {
       showToast(err.message || "Failed to create user", "error");
@@ -114,6 +124,8 @@ const Users = () => {
       const updateData = {
         name: editUser.name,
         email: editUser.email,
+        country: editUser.country || "",
+        city: editUser.city || "",
         ...(editUser.password && { password: editUser.password }),
       };
       const updated = await updateUser(editUser._id, updateData);
@@ -310,6 +322,23 @@ const Users = () => {
                   />
                 </div>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                  Country
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={newUser.country}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, country: e.target.value })
+                    }
+                    className="w-full pl-3 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
+                    placeholder="Country"
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
                   Password *
@@ -324,6 +353,22 @@ const Users = () => {
                     }
                     className="w-full pl-10 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
                     placeholder="••••••"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                  City
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={newUser.city}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, city: e.target.value })
+                    }
+                    className="w-full pl-3 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
+                    placeholder="City"
                   />
                 </div>
               </div>
@@ -391,6 +436,34 @@ const Users = () => {
                       setEditUser({ ...editUser, email: e.target.value })
                     }
                     className="w-full pl-10 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                  Country
+                </label>
+                <div className="relative">
+                  <input
+                    value={editUser.country || ""}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, country: e.target.value })
+                    }
+                    className="w-full pl-3 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                  City
+                </label>
+                <div className="relative">
+                  <input
+                    value={editUser.city || ""}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, city: e.target.value })
+                    }
+                    className="w-full pl-3 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
                   />
                 </div>
               </div>
@@ -473,6 +546,14 @@ const Users = () => {
                 <FiPhone className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
                 <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
                   {viewUser.whatsapp || "Not provided"}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <FiMapPin className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
+                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+                  {viewUser.country && viewUser.city
+                    ? `${viewUser.city}, ${viewUser.country}`
+                    : viewUser.country || viewUser.city || "No location set"}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">

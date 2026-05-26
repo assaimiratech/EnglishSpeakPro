@@ -88,11 +88,38 @@ const HeroSection = () => {
       </div>
 
       {/* Floating Elements */}
-      <div className="absolute top-32 left-10 opacity-20 dark:opacity-10 animate-float">
-        <FiHeadphones className="w-12 h-12 text-[#2E8B57] dark:text-[var(--accent)]" />
+      <div
+        className="
+    absolute
+    top-4 left-4
+    xs:top-5 xs:left-6
+    sm:top-10 sm:left-10
+    md:top-16 md:left-14
+    lg:top-24 lg:left-20
+    xl:top-32 xl:left-24
+    2xl:top-40 2xl:left-32
+    animate-float
+  "
+      >
+        {" "}
+        <div className="flex items-center gap-2 group relative">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden">
+            <img
+              src="/logo.svg"
+              alt="EnglishSpeakPro Logo"
+              className="w-full h-full object-cover rounded-lg"
+            />
+          </div>
+          <div className="relative">
+            <span className="font-bold text-base sm:text-lg text-[#2C2C2C] tracking-tight">
+              English<span className="text-[#2E8B57]">SpeakPro</span>
+            </span>
+            <div className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#8FAF9A] to-[#2E8B57] rounded-full" />
+          </div>
+        </div>
       </div>
-      <div className="absolute bottom-32 right-10 opacity-20 dark:opacity-10 animate-float-delayed">
-        <FiTrendingUp className="w-12 h-12 text-[#8FAF9A]" />
+      <div className="absolute bottom-24 right-4 sm:bottom-32 sm:right-10 opacity-20 dark:opacity-10 animate-float-delayed hidden md:block">
+        <FiTrendingUp className="w-10 h-10 sm:w-12 sm:h-12 text-[#8FAF9A]" />
       </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 text-center">
@@ -101,11 +128,11 @@ const HeroSection = () => {
           className={`inline-flex items-center gap-2 bg-white dark:bg-[var(--card)] border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm rounded-full px-4 py-1.5 mb-6 transition-all duration-200 hover:shadow-md ${animated ? "animate-fade-in" : "opacity-0"}`}
         >
           <div className="relative">
-            <FiHeadphones className="w-4 h-4 text-[#2E8B57] dark:text-[var(--accent)]" />
+            {/* <FiHeadphones className="w-4 h-4 text-[#2E8B57] dark:text-[var(--accent)]" /> */}
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
           </div>
           <span className="text-xs font-medium text-[#2C2C2C] dark:text-[var(--text)]">
-            Audio-Based English Learning
+            The Easy Way to Master English
           </span>
           <FiChevronRight className="w-3 h-3 text-[#8FAF9A] dark:text-[var(--accent)]" />
         </div>
@@ -125,8 +152,9 @@ const HeroSection = () => {
         <p
           className={`text-base sm:text-lg md:text-xl text-[#5F6B63] dark:text-[var(--muted)] mt-4 max-w-2xl mx-auto leading-relaxed transition-colors duration-200 ${animated ? "animate-fade-in-up animation-delay-100" : "opacity-0"}`}
         >
-          Practice real English conversations with audio lessons, speaking
-          exercises, and premium learning topics designed for fluency.
+          Master real-world conversations through interactive practice sessions.
+          Improve your fluency, build confidence, and speak English
+          naturally.{" "}
         </p>
 
         {/* CTA Buttons */}
@@ -166,12 +194,12 @@ const HeroSection = () => {
               overflow-hidden
             "
           >
-            <span className="relative z-10">Start Learning</span>
+            <span className="relative z-10">Start Practice</span>
             <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 relative z-10" />
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
           </Link>
 
-          <Link
+          {/* <Link
             to="/pricing"
             className="
               group
@@ -209,11 +237,11 @@ const HeroSection = () => {
           >
             <FiPlayCircle className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
             <span>View Pricing</span>
-          </Link>
+          </Link> */}
         </div>
 
         {/* Trust Indicators */}
-        <div
+        {/* <div
           className={`flex flex-wrap justify-center gap-6 md:gap-8 mt-10 md:mt-12 pt-4 ${animated ? "animate-fade-in-up animation-delay-300" : "opacity-0"}`}
         >
           {stats.map((stat, index) => (
@@ -241,10 +269,10 @@ const HeroSection = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Free Trial Badge */}
-        <div
+        {/* <div
           className={`mt-8 inline-flex items-center gap-2 bg-[#F1F4F1] dark:bg-[var(--card)] rounded-full px-4 py-1.5 transition-all duration-200 hover:shadow-md group cursor-default ${animated ? "animate-fade-in-up animation-delay-400" : "opacity-0"}`}
         >
           <span className="text-sm group-hover:scale-110 transition-transform duration-200 animate-bounce">
@@ -256,10 +284,10 @@ const HeroSection = () => {
           <span className="text-xs text-[#2E8B57] dark:text-[var(--accent)] font-medium">
             🎯
           </span>
-        </div>
+        </div> */}
 
         {/* Scroll Indicator */}
-        <div
+        {/* <div
           className={`mt-16 hidden md:block ${animated ? "animate-fade-in animation-delay-500" : "opacity-0"}`}
         >
           <div className="flex flex-col items-center gap-2">
@@ -270,7 +298,7 @@ const HeroSection = () => {
               <div className="w-1 h-2 bg-[#8FAF9A] dark:bg-[var(--accent)] rounded-full mt-2 animate-scroll" />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

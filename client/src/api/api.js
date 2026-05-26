@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken } from "../utils/token";
 
 const api = axios.create({
-  baseURL: "https://englishspeakpro-e7ve.onrender.com/api",
+  baseURL: "http://localhost:5000/api",
   timeout: 10000,
 });
 // attach token automatically
@@ -23,17 +23,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const data = error.response?.data;
-    const message = data?.message || "Something went wrong";
+    const message =
+      error.response?.data?.message || error.message || "Something went wrong";
 
-    console.error("API ERROR:", message);
+    console.error("API ERROR:", error); // 👈 log FULL error
 
     return Promise.reject({
       message,
-      status: error.response?.status,
-      data,
+      status: error.response?.status || null,
+      data: error.response?.data || null,
+      original: error, // 👈 IMPORTANT for debugging
     });
   },
 );
-
 export default api;

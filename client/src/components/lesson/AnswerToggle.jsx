@@ -188,7 +188,9 @@ const AnswerToggle = ({
             ${animate ? "" : "transition-none"}
           `}
         >
-          <div className="prose dark:prose-invert max-w-none">{answer}</div>
+          <div className="prose dark:prose-invert max-w-none break-words whitespace-pre-wrap leading-relaxed">
+            {answer}
+          </div>
         </div>
       )}
     </div>

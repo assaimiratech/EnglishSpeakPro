@@ -6,7 +6,14 @@ import { sendEmail } from "../services/email.service.js";
 // REGISTER
 export const register = async (req, res) => {
   try {
-    const { name, email, password, whatsapp } = req.body;
+    const { name, email, password, whatsapp, country, city } = req.body;
+
+    const normalizedWhatsapp = String(whatsapp || "").trim();
+    if (!normalizedWhatsapp || !/^[0-9]+$/.test(normalizedWhatsapp)) {
+      return res.status(400).json({
+        message: "WhatsApp number is required and must contain only digits",
+      });
+    }
 
     const userExists = await User.findOne({ email });
     if (userExists) {
@@ -18,7 +25,9 @@ export const register = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      whatsapp,
+      whatsapp: normalizedWhatsapp,
+      country: country || "",
+      city: city || "",
       password: hashedPassword,
     });
 
@@ -62,6 +71,9 @@ export const login = async (req, res) => {
         role: user.role,
         isPremium: user.isPremium,
         theme: user.theme,
+        whatsapp: user.whatsapp,
+        country: user.country,
+        city: user.city,
         settings: user.settings,
       },
     });
@@ -79,14 +91,24 @@ export const getMe = async (req, res) => {
 // UPDATE PROFILE (authenticated user)
 export const updateProfile = async (req, res) => {
   try {
-    const { name, whatsapp, email, theme } = req.body;
+    const { name, whatsapp, email, theme, country, city } = req.body;
 
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const updates = {};
     if (name !== undefined) updates.name = name;
-    if (whatsapp !== undefined) updates.whatsapp = whatsapp;
+    if (whatsapp !== undefined) {
+      const normalizedWhatsapp = String(whatsapp).trim();
+      if (!normalizedWhatsapp || !/^[0-9]+$/.test(normalizedWhatsapp)) {
+        return res.status(400).json({
+          message: "WhatsApp number is required and must contain only digits",
+        });
+      }
+      updates.whatsapp = normalizedWhatsapp;
+    }
+    if (country !== undefined) updates.country = country;
+    if (city !== undefined) updates.city = city;
     if (theme !== undefined) updates.theme = theme;
 
     if (email && email !== user.email) {

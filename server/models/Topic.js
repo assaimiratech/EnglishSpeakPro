@@ -18,6 +18,11 @@ const topicSchema = new mongoose.Schema(
       default: false,
     },
 
+    isPublished: {
+      type: Boolean,
+      default: false,
+    },
+
     order: {
       type: Number,
       default: 0,

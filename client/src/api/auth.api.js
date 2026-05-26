@@ -42,7 +42,13 @@ export const getMe = async () => {
   return res.data;
 };
 
-export const updateProfile = (data) => api.put("/auth/update", data);
+export const updateProfile = async (data) => {
+  const res = await api.put("/auth/update", data);
+  if (res?.data?.user) {
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+  }
+  return res.data;
+};
 
 // CHANGE PASSWORD
 export const changePassword = async (data) => {

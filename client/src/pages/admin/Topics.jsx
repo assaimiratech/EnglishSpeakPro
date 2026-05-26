@@ -13,7 +13,7 @@ import {
   FiFolderPlus,
 } from "react-icons/fi";
 import {
-  getTopics,
+  getTopicsAdmin,
   createTopic,
   deleteTopic,
   updateTopic,
@@ -23,6 +23,7 @@ const Topics = () => {
   const [topics, setTopics] = useState([]);
   const [title, setTitle] = useState("");
   const [isPremium, setIsPremium] = useState(false);
+  const [isPublished, setIsPublished] = useState(false);
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
@@ -40,7 +41,7 @@ const Topics = () => {
   const fetchTopics = async () => {
     setLoading(true);
     try {
-      const data = await getTopics();
+      const data = await getTopicsAdmin();
       setTopics(data || []);
     } catch (err) {
       showToast("Failed to load topics", "error");
@@ -57,10 +58,10 @@ const Topics = () => {
 
     try {
       if (editId) {
-        await updateTopic(editId, { title, isPremium });
+        await updateTopic(editId, { title, isPremium, isPublished });
         showToast("Topic updated successfully!", "success");
       } else {
-        await createTopic({ title, isPremium });
+        await createTopic({ title, isPremium, isPublished });
         showToast("Topic created successfully!", "success");
       }
 
@@ -78,6 +79,7 @@ const Topics = () => {
     setEditId(topic._id);
     setTitle(topic.title);
     setIsPremium(topic.isPremium);
+    setIsPublished(topic.isPublished);
     setIsFormVisible(true);
   };
 
@@ -96,8 +98,26 @@ const Topics = () => {
   const cancelForm = () => {
     setTitle("");
     setIsPremium(false);
+    setIsPublished(false);
     setEditId(null);
     setIsFormVisible(false);
+  };
+
+  const handleTogglePublish = async (topic) => {
+    try {
+      await updateTopic(topic._id, {
+        isPublished: !topic.isPublished,
+      });
+      await fetchTopics();
+      showToast(
+        topic.isPublished
+          ? "Topic moved to draft"
+          : "Topic published successfully",
+        "success",
+      );
+    } catch (err) {
+      showToast("Failed to update publish status", "error");
+    }
   };
 
   return (
@@ -199,6 +219,18 @@ const Topics = () => {
               <FiStar className="w-4 h-4 text-yellow-500" />
             </label>
 
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isPublished}
+                onChange={(e) => setIsPublished(e.target.checked)}
+                className="w-4 h-4 rounded border-[#E2E8E3] dark:border-[var(--border)] text-[#2E8B57] dark:text-[var(--accent)] focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] bg-white dark:bg-[var(--card)] transition-colors duration-200"
+              />
+              <span className="text-sm text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+                Published
+              </span>
+            </label>
+
             <div className="flex gap-3 pt-2">
               <button
                 onClick={handleCreateOrUpdate}
@@ -244,8 +276,33 @@ const Topics = () => {
           {topics.map((topic) => (
             <div
               key={topic._id}
-              className="group bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
+              className="group bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden relative"
             >
+              <div className="hidden group-hover:flex gap-1 items-center transition-all duration-200 absolute right-2 top-2">
+                {" "}
+                {/* <button
+                      onClick={() => handleTogglePublish(topic)}
+                      className="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border border-[#E2E8E3] dark:border-[var(--border)] bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--surface)]"
+                      title={topic.isPublished ? "Move to Draft" : "Publish"}
+                    >
+                      {topic.isPublished ? "Unpublish" : "Publish"}
+                    </button> */}
+                <button
+                  onClick={() => handleEdit(topic)}
+                  className="p-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
+                  title="Edit"
+                >
+                  <FiEdit2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDelete(topic._id)}
+                  className="p-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+                  title="Delete"
+                >
+                  <FiTrash2 className="w-4 h-4" />
+                </button>
+              </div>
+
               <div className="p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
@@ -258,7 +315,16 @@ const Topics = () => {
                       </h3>
                     </div>
 
-                    <div className="flex items-center gap-3 mt-2">
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors duration-200 ${
+                          topic.isPublished
+                            ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-200"
+                            : "bg-slate-100 dark:bg-slate-700/40 text-slate-600 dark:text-slate-300"
+                        }`}
+                      >
+                        {topic.isPublished ? "Published" : "Draft"}
+                      </span>
                       <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
                         📚 {topic.lessonCount || 0} lessons
                       </span>
@@ -269,23 +335,6 @@ const Topics = () => {
                         </span>
                       )}
                     </div>
-                  </div>
-
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button
-                      onClick={() => handleEdit(topic)}
-                      className="p-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
-                      title="Edit"
-                    >
-                      <FiEdit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(topic._id)}
-                      className="p-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
-                      title="Delete"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
                   </div>
                 </div>
               </div>

@@ -4,36 +4,45 @@ import {
   FiStar,
   FiTrendingUp,
   FiAward,
+  FiMessageCircle,
+  FiSmile,
 } from "react-icons/fi";
 import { TbBrandGooglePodcasts } from "react-icons/tb";
 
 const features = [
   {
-    title: "Audio Lessons",
-    desc: "Learn using real voice-based English practice with native speakers.",
-    icon: <FiHeadphones className="w-6 h-6" />,
+    title: "Real-Life Conversations",
+    desc: "Practice practical English for restaurants, interviews, shopping, travel, and daily situations.",
+    icon: <FiMessageCircle className="w-6 h-6" />,
     color:
       "from-blue-500/10 to-blue-500/5 dark:from-blue-500/20 dark:to-blue-500/10",
     iconColor: "text-blue-600 dark:text-blue-400",
   },
   {
-    title: "Speaking Practice",
-    desc: "Improve pronunciation and fluency naturally with AI feedback.",
+    title: "Learn by Speaking",
+    desc: "Improve fluency through interactive listening and speaking practice sessions.",
     icon: <FiMic className="w-6 h-6" />,
     color:
       "from-green-500/10 to-green-500/5 dark:from-green-500/20 dark:to-green-500/10",
     iconColor: "text-[#2E8B57] dark:text-[var(--accent)]",
   },
   {
-    title: "Premium Topics",
-    desc: "Unlock advanced business and interview English for career growth.",
-    icon: <FiStar className="w-6 h-6" />,
+    title: "Beginner-Friendly Experience",
+    desc: "Simple, clean, and easy-to-use platform designed for confident daily learning.",
+    icon: <FiSmile className="w-6 h-6" />,
     color:
       "from-yellow-500/10 to-yellow-500/5 dark:from-yellow-500/20 dark:to-yellow-500/10",
     iconColor: "text-yellow-600 dark:text-yellow-400",
   },
+  {
+    title: "Build Speaking Confidence",
+    desc: "Practice anytime, anywhere and learn to speak English naturally in real conversations.",
+    icon: <FiTrendingUp className="w-6 h-6" />,
+    color:
+      "from-purple-500/10 to-purple-500/5 dark:from-purple-500/20 dark:to-purple-500/10",
+    iconColor: "text-purple-600 dark:text-purple-400",
+  },
 ];
-
 const FeatureSection = () => {
   return (
     <section className="py-16 md:py-20 lg:py-24 bg-white dark:bg-[var(--bg)] transition-colors duration-200">
@@ -116,14 +125,14 @@ const FeatureSection = () => {
         </div>
 
         {/* Bottom Trust Badge */}
-        <div className="mt-12 text-center">
+        {/* <div className="mt-12 text-center">
           <div className="inline-flex items-center gap-2 bg-[#F1F4F1] dark:bg-[var(--card)] rounded-full px-4 py-2 transition-colors duration-200">
             <FiAward className="w-4 h-4 text-[#2E8B57] dark:text-[var(--accent)]" />
             <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
               Trusted by 10,000+ English learners worldwide
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

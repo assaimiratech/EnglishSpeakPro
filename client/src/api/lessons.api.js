@@ -5,10 +5,14 @@ export const getLessonsByTopic = async (topicId) => {
   return res.data;
 };
 
-export const getAllLessons = (page, topicId) =>
-  api.get("/lessons", {
-    params: { page, topicId },
+export const getAllLessons = (page = 1, topicFilter = "") => {
+  return api.get("/lessons", {
+    params: {
+      page,
+      topic: typeof topicFilter === "string" ? topicFilter : "",
+    },
   });
+};
 
 export const uploadAudio = async (file) => {
   const formData = new FormData();

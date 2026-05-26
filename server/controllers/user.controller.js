@@ -12,7 +12,7 @@ export const getUsers = async (req, res) => {
 
 // CREATE USER (ADMIN)
 export const createUser = async (req, res) => {
-  const { name, email, password, whatsapp } = req.body;
+  const { name, email, password, whatsapp, country, city } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -20,6 +20,8 @@ export const createUser = async (req, res) => {
     name,
     email,
     whatsapp,
+    country: country || "",
+    city: city || "",
     password: hashedPassword,
     role: "user", // 🔥 FORCE ROLE
   });
@@ -41,6 +43,8 @@ export const updateUser = async (req, res) => {
 
     const user = await User.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
+      runValidators: true,
+      context: "query",
     }).select("-password"); // NEVER return password
 
     res.json(user);

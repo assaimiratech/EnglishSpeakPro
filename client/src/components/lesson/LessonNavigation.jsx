@@ -39,7 +39,7 @@ const LessonNavigation = ({
         "
       >
         <FiArrowLeft className="w-4 h-4" />
-        Previous Lesson
+        Previous Question
       </button>
 
       <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -96,7 +96,7 @@ const LessonNavigation = ({
             disabled:cursor-not-allowed
           "
         >
-          {isLastLesson ? "Finish Course" : "Next Lesson"}
+          {isLastLesson ? "Finish Course" : "Next Question"}
           <FiArrowRight className="w-4 h-4" />
         </button>
       </div>

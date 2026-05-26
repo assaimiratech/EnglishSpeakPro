@@ -44,7 +44,9 @@ const Topics = () => {
     if (locked) {
       navigate("/pricing");
     } else {
-      navigate(`/lessons/${topic._id}`);
+      navigate(`/lessons/${topic._id}`, {
+        state: { topicTitle: topic.title },
+      });
     }
   };
 
@@ -353,14 +355,18 @@ const TopicCard = ({
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold text-[#2C2C2C] dark:text-[var(--text)] mb-2 line-clamp-2 group-hover:text-[#2E8B57] dark:group-hover:text-[var(--accent)] transition-colors">
+        <p className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2C2C2C] dark:text-[var(--text)] leading-relaxed whitespace-normal break-words">
           {topic.title}
-        </h3>
+        </p>
+
+        {/* <h3 className="text-lg font-bold text-[#2C2C2C] dark:text-[var(--text)] mb-2 line-clamp-2 group-hover:text-[#2E8B57] dark:group-hover:text-[var(--accent)] transition-colors">
+          {topic.title}
+        </h3> */}
 
         {/* Description */}
         <p className="text-sm text-[#5F6B63] dark:text-[var(--muted)] line-clamp-2 mb-3 transition-colors duration-200">
           {topic.description ||
-            `Master ${topic.title} with interactive lessons and audio practice`}
+            `Master the topic with interactive questions and audio practice`}
         </p>
 
         {/* Lesson Count & Info */}

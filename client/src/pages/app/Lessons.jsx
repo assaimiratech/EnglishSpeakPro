@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
   FiBookOpen,
   FiHeadphones,
@@ -23,7 +23,11 @@ const getAudioUrl = (url) => {
 };
 
 const Lessons = () => {
+  const location = useLocation();
   const { topicId } = useParams();
+  const [topicTitle, setTopicTitle] = useState(
+    location.state?.topicTitle || "",
+  );
   const [lessons, setLessons] = useState([]);
   const [index, setIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -44,11 +48,18 @@ const Lessons = () => {
       try {
         setLoading(true);
         const data = await getLessonsByTopic(topicId);
-        const normalized = (data || []).map((lesson) => ({
+        console.log("RAW API RESPONSE:", data);
+        const lessonsData = Array.isArray(data) ? data : data?.lessons || [];
+        const normalized = lessonsData.map((lesson) => ({
           question: lesson.questionText || lesson.question || "",
           answer: lesson.answerText || lesson.answer || "",
           audio: getAudioUrl(lesson.audioUrl || lesson.audio),
         }));
+        setTopicTitle(
+          Array.isArray(data)
+            ? location.state?.topicTitle || ""
+            : data?.topicTitle || location.state?.topicTitle || "",
+        );
         setLessons(normalized);
         setIndex(0);
         setError("");
@@ -116,7 +127,7 @@ const Lessons = () => {
         {/* Header Section */}
         <div className="mb-6">
           <LessonHeader
-            topicTitle="Daily English Conversation"
+            topicTitle={topicTitle}
             current={index + 1}
             total={lessons.length}
             progress={progress}
@@ -124,7 +135,7 @@ const Lessons = () => {
         </div>
 
         {/* Progress Section */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <FiTrendingUp className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] transition-colors duration-200" />
@@ -137,30 +148,17 @@ const Lessons = () => {
             </span>
           </div>
           <ProgressBar value={progress} />
-        </div>
+        </div> */}
 
         {/* Question Card */}
         <div className="mt-6 bg-white dark:bg-[var(--card)] rounded-2xl shadow-md border border-[#E2E8E3] dark:border-[var(--border)] overflow-hidden transition-all duration-200 hover:shadow-lg dark:hover:shadow-xl">
-          {/* Card Header */}
-          <div className="px-6 pt-5 pb-3 border-b border-[#E2E8E3] dark:border-[var(--border)] bg-gradient-to-r from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--card)] transition-colors duration-200">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#8FAF9A]/10 dark:bg-[#8FAF9A]/20 flex items-center justify-center transition-colors duration-200">
-                <FiBookOpen className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
-              </div>
-              <span className="text-xs font-medium text-[#8FAF9A] dark:text-[var(--accent)] uppercase tracking-wide transition-colors duration-200">
-                Today's Question
-              </span>
-            </div>
-          </div>
-
           {/* Question Content */}
           <div className="p-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#2C2C2C] dark:text-[var(--text)] leading-relaxed transition-colors duration-200">
+            <p className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2C2C2C] dark:text-[var(--text)] leading-relaxed whitespace-normal break-words">
               {lesson.question}
-            </h2>
-
+            </p>
             {/* Audio Indicator */}
-            <div className="flex items-center gap-2 mt-4 pt-2">
+            {/* <div className="flex items-center gap-2 mt-4 pt-2">
               <div className="flex items-center gap-1.5 text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
                 <FiHeadphones className="w-3.5 h-3.5 text-[#8FAF9A] dark:text-[var(--accent)]" />
                 <span>Audio lesson available</span>
@@ -170,7 +168,7 @@ const Lessons = () => {
                 <FiCheckCircle className="w-3.5 h-3.5 text-[#2E8B57] dark:text-[var(--accent)]" />
                 <span>Interactive learning</span>
               </div>
-            </div>
+            </div> */}
 
             {/* Answer Toggle */}
             <AnswerToggle
@@ -199,7 +197,7 @@ const Lessons = () => {
               </span>
             </div>
             <p className="text-sm text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-              You've completed all lessons in this topic. Great job! 🎉
+              You've completed all questions in this topic. Great job! 🎉
             </p>
           </div>
         )}
@@ -207,10 +205,7 @@ const Lessons = () => {
 
       {/* Sticky Audio Player */}
       {lesson.audio && (
-        <StickyPlayer
-          src={lesson.audio}
-          title={lesson.question.substring(0, 50)}
-        />
+        <StickyPlayer src={lesson.audio} title={"Listen to Question"} />
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import {
   FiChevronUp,
   FiChevronDown,
   FiMinimize2,
+  FiHeadphones,
 } from "react-icons/fi";
 
 const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
@@ -159,6 +160,7 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
               </button>
 
               <div className="min-w-0 flex-1">
+                <FiHeadphones />
                 <p className="text-sm font-medium text-[#2C2C2C] truncate">
                   {title}
                 </p>
@@ -251,7 +253,7 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
               </div>
 
               {/* Minimize/Close Buttons */}
-              <div className="flex items-center gap-1">
+              {/* <div className="flex items-center gap-1">
                 <button
                   onClick={() => setIsMinimized(true)}
                   className="p-2 rounded-lg text-[#5F6B63] hover:bg-[#F1F4F1] transition-all duration-200"
@@ -268,7 +270,7 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
                     <FiVolumeX className="w-4 h-4 rotate-45" />
                   </button>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import api from "./api";
 
-export const getTopics = async () => {
-  const res = await api.get("/topics");
+export const getTopicsAdmin = async () => {
+  const res = await api.get("/topics/admin");
   return res.data;
 };
 

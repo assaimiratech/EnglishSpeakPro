@@ -20,9 +20,9 @@ import {
   createLesson,
   updateLesson,
   deleteLesson,
+  getLessonsAdmin,
 } from "../../api/admin.lessons.api";
-import { getTopics } from "../../api/admin.topics.api";
-import { getAllLessons } from "../../api/lessons.api";
+import { getTopicsAdmin } from "../../api/admin.topics.api";
 
 const Lessons = () => {
   const [lessons, setLessons] = useState([]);
@@ -36,6 +36,7 @@ const Lessons = () => {
     answerText: "",
     order: 1,
     isPremium: false,
+    isPublished: false,
     audioUrl: "",
   });
   const [audioFile, setAudioFile] = useState(null);
@@ -53,11 +54,16 @@ const Lessons = () => {
     loadData();
   }, [page, topicFilter]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadData();
+    }, 400);
+  }, [page, topicFilter, search]);
+
   const loadTopics = async () => {
     try {
-      const res = await getTopics();
-      const data = res?.topics || res || [];
-      setTopics(data);
+      const data = await getTopicsAdmin();
+      setTopics(data || []);
     } catch (err) {
       console.log(err);
       setTopics([]);
@@ -66,15 +72,24 @@ const Lessons = () => {
 
   const loadData = async () => {
     try {
-      const res = await getAllLessons(page, topicFilter);
-      setLessons(res.data.lessons || []);
+      const res = await getLessonsAdmin({
+        page,
+        limit: 10,
+        search,
+        topic: topicFilter,
+      });
+
+      console.log("API RESPONSE:", res);
+
+      const lessons = res?.lessons || res?.data?.lessons || [];
+
+      setLessons(lessons);
     } catch (err) {
       console.error(err);
       showToast(err?.message || "Failed to load lessons", "error");
       setLessons([]);
     }
   };
-
   const handleUploadAudio = async () => {
     if (!audioFile) return;
 
@@ -147,6 +162,7 @@ const Lessons = () => {
       answerText: "",
       order: 1,
       isPremium: false,
+      isPublished: false,
       audioUrl: "",
     });
     setEditId(null);
@@ -162,6 +178,7 @@ const Lessons = () => {
       answerText: lesson.answerText,
       order: lesson.order,
       isPremium: lesson.isPremium,
+      isPublished: lesson.isPublished,
       audioUrl: lesson.audioUrl,
     });
     setIsFormVisible(true);
@@ -178,13 +195,30 @@ const Lessons = () => {
     }
   };
 
+  const handleTogglePublish = async (lesson) => {
+    try {
+      await updateLesson(lesson._id, {
+        isPublished: !lesson.isPublished,
+      });
+      await loadData();
+      showToast(
+        lesson.isPublished
+          ? "Lesson moved to draft"
+          : "Lesson published successfully",
+        "success",
+      );
+    } catch (err) {
+      showToast("Failed to update publish status", "error");
+    }
+  };
+
   const handleSearch = () => {
     setPage(1);
-    loadData();
   };
 
   return (
-    <div className="p-4 md:p-6 bg-[#F7F9F7] dark:bg-[var(--surface)] min-h-screen transition-colors duration-200">
+    <div className="p-4 md:p-6 bg-[#F7F9F7] dark:bg-[var(--surface)] min-h-screen transition-colors duration-200 overflow-x-hidden">
+      {" "}
       {/* Header */}
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -206,7 +240,6 @@ const Lessons = () => {
           </button>
         </div>
       </div>
-
       {/* Toast Notification */}
       {toast && (
         <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
@@ -229,7 +262,6 @@ const Lessons = () => {
           </div>
         </div>
       )}
-
       {/* Filter Bar */}
       <div className="bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] p-4 shadow-sm mb-6 transition-colors duration-200">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -263,7 +295,6 @@ const Lessons = () => {
           </button>
         </div>
       </div>
-
       {/* Form Modal/Card */}
       {isFormVisible && (
         <div className="bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-lg mb-6 overflow-hidden transition-colors duration-200">
@@ -359,6 +390,20 @@ const Lessons = () => {
                   Premium Lesson
                 </span>
               </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.isPublished}
+                  onChange={(e) =>
+                    setForm({ ...form, isPublished: e.target.checked })
+                  }
+                  className="w-4 h-4 rounded border-[#E2E8E3] dark:border-[var(--border)] text-[#2E8B57] dark:text-[var(--accent)] focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] bg-white dark:bg-[var(--card)]"
+                />
+                <span className="text-sm text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+                  Published
+                </span>
+              </label>
             </div>
 
             <div className="mt-4 pt-4 border-t border-[#E2E8E3] dark:border-[var(--border)]">
@@ -423,7 +468,6 @@ const Lessons = () => {
           </div>
         </div>
       )}
-
       {/* Lessons List */}
       <div className="space-y-4">
         {lessons?.map((lesson) => (
@@ -440,6 +484,15 @@ const Lessons = () => {
                         Premium
                       </span>
                     )}
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full font-medium transition-colors duration-200 ${
+                        lesson.isPublished
+                          ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-200"
+                          : "bg-slate-100 dark:bg-slate-700/40 text-slate-600 dark:text-slate-300"
+                      }`}
+                    >
+                      {lesson.isPublished ? "Published" : "Draft"}
+                    </span>
                     <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
                       Order: {lesson.order}
                     </span>
@@ -463,7 +516,13 @@ const Lessons = () => {
                     />
                   )}
                 </div>
-                <div className="flex gap-2 flex-shrink-0">
+                <div className="flex gap-2 flex-shrink-0 items-center">
+                  <button
+                    onClick={() => handleTogglePublish(lesson)}
+                    className="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border border-[#E2E8E3] dark:border-[var(--border)] bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--surface)]"
+                  >
+                    {lesson.isPublished ? "Unpublish" : "Publish"}
+                  </button>
                   <button
                     onClick={() => handleEdit(lesson)}
                     className="p-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200"
@@ -496,7 +555,6 @@ const Lessons = () => {
           </div>
         )}
       </div>
-
       {/* Pagination */}
       {lessons.length > 0 && (
         <div className="flex items-center justify-center gap-3 mt-8 pt-4 border-t border-[#E2E8E3] dark:border-[var(--border)]">

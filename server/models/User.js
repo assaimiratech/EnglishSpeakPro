@@ -20,6 +20,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      match: [/^[0-9]+$/, "WhatsApp number must contain only digits"],
+    },
+
+    country: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    city: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     theme: {

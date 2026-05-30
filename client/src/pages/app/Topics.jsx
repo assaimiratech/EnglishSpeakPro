@@ -87,13 +87,11 @@ const Topics = () => {
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#8FAF9A]/20 to-transparent dark:from-[var(--accent)]/10 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-[#2E8B57]/10 to-transparent dark:from-[var(--accent)]/5 rounded-full blur-3xl animate-pulse delay-1000" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#8FAF9A]/5 dark:bg-[var(--accent)]/5 rounded-full blur-2xl" />
-
       {/* Floating Particles */}
       <div className="absolute top-20 left-10 w-2 h-2 bg-[#8FAF9A] dark:bg-[var(--accent)] rounded-full animate-float" />
       <div className="absolute top-40 right-20 w-3 h-3 bg-[#2E8B57] dark:bg-[var(--accent)] rounded-full animate-float-delayed" />
-      <div className="absolute bottom-32 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-float" />
+      <div className="absolute bottom-32 left-1/4 w-2 h-2 bg-[#2E8B57] rounded-full animate-float shadow-[0_0_10px_#2E8B57]" />{" "}
       <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-[#8FAF9A] dark:bg-[var(--accent)] rounded-full animate-float-delayed" />
-
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12 relative z-10">
         {/* Hero Section */}
         <div className="text-center mb-12">
@@ -103,7 +101,7 @@ const Topics = () => {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center gap-2 bg-white/80 dark:bg-[var(--card)]/80 backdrop-blur-sm border border-[#E2E8E3] dark:border-[var(--border)] rounded-full px-4 py-2 mb-6 shadow-sm transition-colors duration-200"
           >
-            <HiSparkles className="w-4 h-4 text-yellow-500" />
+            <HiSparkles className="w-4 h-4 text-[#2E8B57]" />
             <span className="text-xs font-medium text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
               Learn at Your Pace
             </span>
@@ -189,11 +187,11 @@ const Topics = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="mt-8 bg-gradient-to-r from-yellow-50 via-amber-50 to-yellow-50 dark:from-yellow-900/20 dark:via-amber-900/20 dark:to-yellow-900/20 rounded-2xl p-5 border border-yellow-200 dark:border-yellow-900/30 shadow-lg transition-colors duration-200"
+            className="mt-8 bg-gradient-to-r from-[#e8f5ee] via-[#d9f2e6] to-[#e8f5ee] dark:from-[#2E8B57]/20 dark:via-[#257149]/20 dark:to-[#1f5e3c]/20 rounded-2xl p-5 border border-[#8FAF9A] dark:border-[#2E8B57]/30 shadow-lg transition-colors duration-200"
           >
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-amber-500 flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2E8B57] to-[#257149] flex items-center justify-center shadow-lg">
                   <FiZap className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -207,7 +205,7 @@ const Topics = () => {
               </div>
               <button
                 onClick={() => navigate("/pricing")}
-                className="px-6 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="px-6 py-2.5 bg-gradient-to-r from-[#2E8B57] to-[#257149] hover:from-[#257149] hover:to-[#1f5e3c] text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
                 Upgrade Now →
               </button>
@@ -234,7 +232,6 @@ const Topics = () => {
           </motion.div>
         )}
       </div>
-
       <style jsx>{`
         @keyframes float {
           0%,
@@ -301,7 +298,7 @@ const TopicCard = ({
         group relative cursor-pointer rounded-2xl transition-all duration-300
         ${
           isPremium && !isLocked
-            ? " bg-white dark:bg-[var(--card)] from-amber-50 via-white dark:from-amber-950/30 dark:via-[var(--card)] dark:to-yellow-950/30 shadow-lg hover:shadow-xl"
+            ? "bg-white dark:bg-[var(--card)] from-[#d9f2e6] via-white dark:from-[#257149]/20 dark:via-[var(--card)] dark:to-[#1f5e3c]/30 shadow-lg hover:shadow-xl"
             : isPremium && isLocked
               ? "bg-gray-50 dark:bg-[var(--card)] border border-gray-200 dark:border-[var(--border)]"
               : "bg-white dark:bg-[var(--card)] border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm hover:shadow-lg"
@@ -326,7 +323,7 @@ const TopicCard = ({
               w-12 h-12 rounded-xl flex items-center justify-center
               ${
                 isPremium
-                  ? "bg-gradient-to-br from-yellow-400 to-amber-400 shadow-md"
+                  ? "bg-gradient-to-br from-[#2E8B57] via-[#2a7f50] to-[#1f5e3c] shadow-md"
                   : "bg-gradient-to-br from-[#8FAF9A]/20 to-[#8FAF9A]/10 dark:from-[var(--accent)]/20 dark:to-[var(--accent)]/10"
               }
             `}
@@ -346,7 +343,7 @@ const TopicCard = ({
           {isPremium && (
             <motion.div
               animate={isHovered ? { scale: 1.1 } : { scale: 1 }}
-              className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-400 to-amber-400 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-[#2E8B57] via-[#2a7f50] to-[#1f5e3c] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md"
             >
               <FiStar className="w-3 h-3" />
               <span>Premium</span>
@@ -355,7 +352,7 @@ const TopicCard = ({
         </div>
 
         {/* Title */}
-        <p className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2C2C2C] dark:text-[var(--text)] leading-relaxed whitespace-normal break-words">
+        <p className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2C2C2C] dark:text-[var(--text)] leading-relaxed whitespace-normal break-words line-clamp-1">
           {topic.title}
         </p>
 
@@ -428,11 +425,11 @@ const TopicCard = ({
               animate={{ y: [0, -5, 0] }}
               transition={{ duration: 1, repeat: Infinity }}
             >
-              <FiLock className="text-yellow-400 text-4xl mb-2" />
+              <FiLock className="text-[#2E8B57] text-4xl mb-2 drop-shadow-[0_0_6px_#2E8B57]" />{" "}
             </motion.div>
             <p className="text-sm font-semibold text-white">Premium Locked</p>
-            <p className="text-xs text-yellow-300 mt-1">Upgrade to unlock</p>
-            <button className="mt-3 px-4 py-1.5 bg-gradient-to-r from-yellow-500 to-amber-500 text-white text-xs rounded-lg font-medium hover:from-yellow-600 hover:to-amber-600 transition-all duration-200">
+            <p className="text-xs text-[#2E8B57] mt-1">Upgrade to unlock</p>
+            <button className="mt-3 px-4 py-1.5 bg-gradient-to-r from-[#2E8B57] to-[#257149] text-white text-xs rounded-lg font-medium hover:from-[#257149] hover:to-[#1f5e3c] transition-all duration-200">
               Upgrade →
             </button>
           </motion.div>

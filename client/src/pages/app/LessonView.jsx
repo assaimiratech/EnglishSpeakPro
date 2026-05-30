@@ -23,7 +23,9 @@ import { getLessonsByTopic, markLessonComplete } from "../../api/lessons.api";
 const getAudioUrl = (url) => {
   if (!url) return "";
   if (url.startsWith("http")) return url;
-  const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/";
+  const base =
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://englishspeakpro-e7ve.onrender.com/";
   return `${base}${url}`;
 };
 
@@ -135,7 +137,6 @@ const Lessons = () => {
   const handleLike = () => {
     setLiked(!liked);
     // Track likes in analytics
-    console.log(`Lesson ${liked ? "unliked" : "liked"}:`, lessons[index].id);
   };
 
   const handleShare = async () => {

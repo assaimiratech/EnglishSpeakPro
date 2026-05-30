@@ -10,13 +10,19 @@ export const protect = async (req, res, next) => {
 
   try {
     const token = authHeader.split(" ")[1];
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.id).select("-password");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // ✅ THIS IS THE IMPORTANT PART
+    if (!user.isActive) {
+      return res.status(403).json({
+        message: "Account blocked. Contact admin.",
+      });
     }
 
     req.user = user;
@@ -26,7 +32,6 @@ export const protect = async (req, res, next) => {
   }
 };
 
-// ✅ THIS WAS MISSING OR WRONG IN YOUR PROJECT
 export const adminOnly = (req, res, next) => {
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({ message: "Admin access only" });

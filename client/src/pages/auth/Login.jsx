@@ -57,6 +57,10 @@ const Login = () => {
 
       const decoded = jwtDecode(data.token);
 
+      if (decoded.isActive === "false") {
+        toast.error("Account is disabled. Contact admin.");
+        return;
+      }
       if (decoded.role === "admin") {
         navigate("/naja", { replace: true });
       } else {

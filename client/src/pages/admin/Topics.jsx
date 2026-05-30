@@ -279,7 +279,6 @@ const Topics = () => {
               className="group bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden relative"
             >
               <div className="hidden group-hover:flex gap-1 items-center transition-all duration-200 absolute right-2 top-2">
-                {" "}
                 {/* <button
                       onClick={() => handleTogglePublish(topic)}
                       className="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border border-[#E2E8E3] dark:border-[var(--border)] bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--surface)]"

@@ -157,7 +157,7 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
-            <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+            {/* <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
               <Link
                 to="/pricing"
                 className="relative px-4 py-2 text-sm font-medium text-[#5F6B63] hover:text-[#2E8B57] transition-colors duration-200 group"
@@ -165,7 +165,7 @@ const Navbar = () => {
                 Pricing
                 <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-[#8FAF9A] to-[#2E8B57] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
               </Link>
-            </motion.div>
+            </motion.div> */}
 
             {/* IF NOT LOGGED IN */}
             {!user ? (
@@ -249,7 +249,7 @@ const Navbar = () => {
                         className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-[#E2E8E3] py-1 z-50 overflow-hidden"
                       >
                         {/* User Header */}
-                        <div className="px-4 py-3 bg-gradient-to-r from-[#8c86b9] to-white border-b border-[#E2E8E3]">
+                        <div className="px-4 py-3 bg-gradient-to-r from-[#81d081] hover:to-white border-b border-[#E2E8E3]">
                           <p className="text-sm font-bold text-[#2C2C2C]">
                             {user.name}
                           </p>
@@ -267,7 +267,11 @@ const Navbar = () => {
                         {/* Menu Items */}
                         <div className="py-1">
                           <motion.button
-                            whileHover={{ x: 5, backgroundColor: "#90a6d0" }}
+                            whileHover={{
+                              x: 5,
+                              background:
+                                "linear-gradient(to right, #bbe0bb, #ffffff)",
+                            }}
                             onClick={handleProfileClick}
                             className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#5F6B63] hover:text-[#2C2C2C] transition-all duration-200"
                           >
@@ -276,7 +280,11 @@ const Navbar = () => {
                           </motion.button>
 
                           <motion.button
-                            whileHover={{ x: 5, backgroundColor: "#90a6d0" }}
+                            whileHover={{
+                              x: 5,
+                              background:
+                                "linear-gradient(to right, #bbe0bb, #ffffff)",
+                            }}
                             onClick={() => {
                               toggleTheme();
                               setIsProfileDropdownOpen(false);
@@ -291,7 +299,11 @@ const Navbar = () => {
                         <div className="border-t border-[#E2E8E3] my-1"></div>
 
                         <motion.button
-                          whileHover={{ x: 5, backgroundColor: "#90a6d0" }}
+                          whileHover={{
+                            x: 5,
+                            background:
+                              "linear-gradient(to right, #cb9797, #ffffff)",
+                          }}
                           onClick={handleLogout}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 transition-all duration-200"
                         >
@@ -382,12 +394,6 @@ const Navbar = () => {
                         label="Topics"
                         onClick={() => setIsMobileMenuOpen(false)}
                       />
-                      <NavItem
-                        to="/pricing"
-                        icon={<FaMoneyBill />}
-                        label="Pricing"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      />
                       <div className="h-px bg-[#E2E8E3] dark:bg-[var(--border)] my-2" />
                       <NavItem
                         to="/login"
@@ -429,12 +435,6 @@ const Navbar = () => {
                         onClick={() => setIsMobileMenuOpen(false)}
                       />
                       <NavItem
-                        to="/pricing"
-                        icon={<FiCreditCard />}
-                        label="Pricing"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      />
-                      <NavItem
                         className="dark:hover:bg-[#5F6B63]"
                         isButton
                         icon={<FiUser />}
@@ -453,7 +453,7 @@ const Navbar = () => {
                           toggleTheme();
                           setIsMobileMenuOpen(false);
                         }}
-                        className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#5F6B63] dark:text-[#5F6B63)] hover:bg-[#498949] dark:hover:bg-[#5F6B63] transition-all duration-200"
+                        className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-[#5F6B63] dark:text-[#5F6B63)] hover:bg-[#498949] dark:hover:bg-[#9fb5a6] transition-all duration-200"
                       >
                         <span className="text-lg">
                           {theme === "dark" ? (

@@ -1,7 +1,7 @@
 import api from "./api";
 
 export const getLessonsByTopic = async (topicId) => {
-  const res = await api.get(`/lessons/${topicId}`);
+  const res = await api.get(`/lessons/topic/${topicId}`);
   return res.data;
 };
 
@@ -18,6 +18,6 @@ export const uploadAudio = async (file) => {
   const formData = new FormData();
   formData.append("audio", file);
 
-  const res = await api.post("/upload/audio", formData);
+  const res = await api.post("/uploads/", formData);
   return res.data;
 };

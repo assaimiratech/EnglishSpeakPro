@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FiPlayCircle,
   FiTrendingUp,
@@ -11,6 +12,8 @@ import {
 } from "react-icons/fi";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
   const [typedText, setTypedText] = useState("");
   const [wordIndex, setWordIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -78,6 +81,16 @@ const HeroSection = () => {
     },
   ];
 
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const handleBtnClick = () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    } else {
+      navigate("/topics");
+    }
+  };
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--bg)] py-16 md:py-20 lg:py-28 transition-colors duration-200">
       {/* Animated Background Elements */}
@@ -161,8 +174,8 @@ const HeroSection = () => {
         <div
           className={`flex flex-col sm:flex-row gap-4 justify-center mt-8 md:mt-10 ${animated ? "animate-fade-in-up animation-delay-200" : "opacity-0"}`}
         >
-          <Link
-            to="/topics"
+          <button
+            onClick={handleBtnClick}
             className="
               group
               relative
@@ -197,7 +210,7 @@ const HeroSection = () => {
             <span className="relative z-10">Start Practice</span>
             <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 relative z-10" />
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
-          </Link>
+          </button>
 
           {/* <Link
             to="/pricing"

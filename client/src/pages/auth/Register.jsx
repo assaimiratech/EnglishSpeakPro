@@ -242,7 +242,7 @@ const Register = () => {
                   <input
                     type="tel"
                     name="whatsapp"
-                    placeholder="+94 XX XXX XXXX"
+                    placeholder="07X XXX XXXX"
                     value={form.whatsapp}
                     onChange={handleChange}
                     className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white/50 dark:bg-[var(--card)]/50 text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"

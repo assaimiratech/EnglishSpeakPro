@@ -18,7 +18,9 @@ import { getLessonsByTopic } from "../../api/lessons.api";
 const getAudioUrl = (url) => {
   if (!url) return "";
   if (url.startsWith("http")) return url;
-  const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const base =
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://englishspeakpro-e7ve.onrender.com";
   return `${base}${url}`;
 };
 
@@ -48,7 +50,6 @@ const Lessons = () => {
       try {
         setLoading(true);
         const data = await getLessonsByTopic(topicId);
-        console.log("RAW API RESPONSE:", data);
         const lessonsData = Array.isArray(data) ? data : data?.lessons || [];
         const normalized = lessonsData.map((lesson) => ({
           question: lesson.questionText || lesson.question || "",

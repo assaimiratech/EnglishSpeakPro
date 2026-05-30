@@ -48,7 +48,6 @@ const RequestPremiumModal = ({ isOpen, onClose }) => {
       showToast("Request sent successfully!", "success");
       setTimeout(() => onClose(), 1200);
     } catch (err) {
-      console.log(err);
       showToast(err?.message || "Failed to send request", "error");
     } finally {
       setLoading(false);

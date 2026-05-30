@@ -19,6 +19,7 @@ import {
   FiLoader,
   FiSave,
   FiMapPin,
+  FiCalendar,
 } from "react-icons/fi";
 import { TfiCrown } from "react-icons/tfi";
 import {
@@ -94,6 +95,28 @@ const Users = () => {
     }
   };
 
+  const handlePause = async (user) => {
+    if (!user?._id) {
+      showToast("User ID missing", "error");
+      return;
+    }
+
+    try {
+      const updated = await updateUser(user._id, {
+        isActive: !user.isActive,
+      });
+
+      setUsers(users.map((u) => (u._id === updated._id ? updated : u)));
+
+      showToast(
+        `${updated.name} has been ${updated.isActive ? "activated" : "paused"}`,
+        "success",
+      );
+    } catch (err) {
+      showToast(err.message || "Failed to update user", "error");
+    }
+  };
+
   const handleCreate = async (e) => {
     e.preventDefault();
     if (!newUser.name || !newUser.email || !newUser.password) {
@@ -120,17 +143,23 @@ const Users = () => {
 
   const handleEdit = async () => {
     if (!editUser) return;
+
     try {
       const updateData = {
         name: editUser.name,
         email: editUser.email,
         country: editUser.country || "",
         city: editUser.city || "",
+        isPremium: editUser.isPremium,
         ...(editUser.password && { password: editUser.password }),
       };
+
       const updated = await updateUser(editUser._id, updateData);
+
       setUsers(users.map((u) => (u._id === updated._id ? updated : u)));
+
       setEditUser(null);
+
       showToast(`User "${updated.name}" updated successfully`, "success");
     } catch (err) {
       showToast(err.message || "Failed to update user", "error");
@@ -165,7 +194,7 @@ const Users = () => {
     <div className="p-4 md:p-6 bg-[#F7F9F7] dark:bg-[var(--surface)] min-h-screen transition-colors duration-200">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed top-6 right-6 z-50 animate-slide-in-right">
+        <div className="fixed top-6 right-6 left-4 md:left-auto z-50 animate-slide-in-right">
           <div
             className={`flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg transition-colors duration-200 ${
               toast.type === "success"
@@ -180,7 +209,9 @@ const Users = () => {
             {toast.type === "success" && <FiCheckCircle className="w-5 h-5" />}
             {toast.type === "error" && <FiAlertCircle className="w-5 h-5" />}
             {toast.type === "warning" && <FiAlertCircle className="w-5 h-5" />}
-            <span className="text-sm font-medium">{toast.message}</span>
+            <span className="text-sm font-medium break-words">
+              {toast.message}
+            </span>
           </div>
         </div>
       )}
@@ -189,29 +220,29 @@ const Users = () => {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#8FAF9A]/10 dark:bg-[var(--accent)]/20 flex items-center justify-center transition-colors duration-200">
+            <div className="w-10 h-10 rounded-xl bg-[#8FAF9A]/10 dark:bg-[var(--accent)]/20 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
               <FiUsers className="w-5 h-5 text-[#8FAF9A] dark:text-[var(--accent)]" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
                 Users Management
               </h1>
-              <p className="text-sm text-[#5F6B63] dark:text-[var(--muted)] mt-1 transition-colors duration-200">
+              <p className="text-xs sm:text-sm text-[#5F6B63] dark:text-[var(--muted)] mt-1 transition-colors duration-200">
                 Manage platform users and their roles
               </p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-end">
             <button
               onClick={fetchUsers}
-              className="inline-flex items-center gap-2 text-[#5F6B63] dark:text-[var(--muted)] hover:text-[#2E8B57] dark:hover:text-[var(--accent)] px-3 py-2 rounded-xl transition-all duration-200"
+              className="inline-flex items-center gap-1 sm:gap-2 text-[#5F6B63] dark:text-[var(--muted)] hover:text-[#2E8B57] dark:hover:text-[var(--accent)] px-2 sm:px-3 py-2 rounded-xl transition-all duration-200 text-sm sm:text-base"
             >
               <FiRefreshCw className="w-4 h-4" />
-              Refresh
+              <span className="hidden sm:inline">Refresh</span>
             </button>
             <button
               onClick={() => setShowCreate(!showCreate)}
-              className="inline-flex items-center gap-2 bg-[#2E8B57] dark:bg-[var(--accent)] hover:bg-[#257149] text-white px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+              className="inline-flex items-center gap-1 sm:gap-2 bg-[#2E8B57] dark:bg-[var(--accent)] hover:bg-[#257149] text-white px-3 sm:px-4 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md text-sm sm:text-base"
             >
               <FiPlus className="w-4 h-4" />
               <span>Create User</span>
@@ -222,7 +253,7 @@ const Users = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-white dark:bg-[var(--card)] rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] p-4 shadow-sm text-center transition-colors duration-200">
           <FiUsers className="w-5 h-5 text-[#8FAF9A] dark:text-[var(--accent)] mx-auto mb-1" />
           <p className="text-2xl font-bold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
@@ -255,7 +286,7 @@ const Users = () => {
       {/* Create User Form */}
       {showCreate && (
         <div className="bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-lg mb-6 overflow-hidden transition-colors duration-200">
-          <div className="px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--card)] border-b border-[#E2E8E3] dark:border-[var(--border)] flex justify-between items-center transition-colors duration-200">
+          <div className="px-4 sm:px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--card)] border-b border-[#E2E8E3] dark:border-[var(--border)] flex flex-wrap justify-between items-center gap-3 transition-colors duration-200">
             <div className="flex items-center gap-2">
               <FiPlus className="w-5 h-5 text-[#2E8B57] dark:text-[var(--accent)]" />
               <h2 className="font-semibold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
@@ -269,8 +300,8 @@ const Users = () => {
               <FiXCircle className="w-5 h-5" />
             </button>
           </div>
-          <form onSubmit={handleCreate} className="p-5 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleCreate} className="p-4 sm:p-5 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
                   Full Name *
@@ -318,11 +349,10 @@ const Users = () => {
                       setNewUser({ ...newUser, whatsapp: e.target.value })
                     }
                     className="w-full pl-10 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
-                    placeholder="+94 XX XXX XXXX"
+                    placeholder="07X XXX XXXX"
                   />
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
                   Country
@@ -373,10 +403,10 @@ const Users = () => {
                 </div>
               </div>
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-wrap gap-3 pt-2">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 bg-[#2E8B57] dark:bg-[var(--accent)] hover:bg-[#257149] text-white px-5 py-2 rounded-xl font-medium transition-all duration-200"
+                className="inline-flex items-center gap-2 bg-[#2E8B57] dark:bg-[var(--accent)] hover:bg-[#257149] text-white px-4 sm:px-5 py-2 rounded-xl font-medium transition-all duration-200 text-sm sm:text-base"
               >
                 <FiSave className="w-4 h-4" />
                 Create User
@@ -384,7 +414,7 @@ const Users = () => {
               <button
                 type="button"
                 onClick={() => setShowCreate(false)}
-                className="border border-[#E2E8E3] dark:border-[var(--border)] text-[#5F6B63] dark:text-[var(--muted)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--surface)] px-5 py-2 rounded-xl font-medium transition-all duration-200"
+                className="border border-[#E2E8E3] dark:border-[var(--border)] text-[#5F6B63] dark:text-[var(--muted)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--surface)] px-4 sm:px-5 py-2 rounded-xl font-medium transition-all duration-200 text-sm sm:text-base"
               >
                 Cancel
               </button>
@@ -395,9 +425,9 @@ const Users = () => {
 
       {/* Edit User Modal */}
       {editUser && (
-        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[var(--card)] rounded-2xl w-full max-w-md mx-4 overflow-hidden shadow-xl transition-colors duration-200">
-            <div className="px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--card)] border-b border-[#E2E8E3] dark:border-[var(--border)] flex justify-between items-center transition-colors duration-200">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[var(--card)] rounded-2xl w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto shadow-xl transition-colors duration-200">
+            <div className="sticky top-0 px-4 sm:px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--card)] border-b border-[#E2E8E3] dark:border-[var(--border)] flex justify-between items-center transition-colors duration-200 z-10">
               <h2 className="font-semibold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
                 Edit User
               </h2>
@@ -408,7 +438,7 @@ const Users = () => {
                 <FiXCircle className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-5 space-y-4">
+            <div className="p-4 sm:p-5 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
                   Name
@@ -483,16 +513,37 @@ const Users = () => {
                   />
                 </div>
               </div>
-              <div className="flex gap-3 pt-2">
+              <div>
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1">
+                  Premium Status
+                </label>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setEditUser({
+                      ...editUser,
+                      isPremium: !editUser.isPremium,
+                    })
+                  }
+                  className={`w-full py-2 rounded-xl font-medium transition-all duration-200 ${
+                    editUser.isPremium
+                      ? "bg-yellow-50 text-yellow-600 dark:bg-yellow-900/20 dark:text-yellow-400 border border-yellow-300 dark:border-yellow-700"
+                      : "bg-[#2E8B57]/10 text-[#2E8B57] dark:bg-[var(--accent)]/20 dark:text-[var(--accent)] border border-[#2E8B57]"
+                  }`}
+                >
+                  {editUser.isPremium ? "Remove Premium" : "Make Premium"}
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-3 pt-2">
                 <button
                   onClick={handleEdit}
-                  className="bg-[#2E8B57] dark:bg-[var(--accent)] hover:bg-[#257149] text-white px-5 py-2 rounded-xl font-medium transition-all duration-200"
+                  className="bg-[#2E8B57] dark:bg-[var(--accent)] hover:bg-[#257149] text-white px-5 py-2 rounded-xl font-medium transition-all duration-200 text-sm sm:text-base"
                 >
                   Save Changes
                 </button>
                 <button
                   onClick={() => setEditUser(null)}
-                  className="border border-[#E2E8E3] dark:border-[var(--border)] text-[#5F6B63] dark:text-[var(--muted)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--surface)] px-5 py-2 rounded-xl font-medium transition-all duration-200"
+                  className="border border-[#E2E8E3] dark:border-[var(--border)] text-[#5F6B63] dark:text-[var(--muted)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--surface)] px-5 py-2 rounded-xl font-medium transition-all duration-200 text-sm sm:text-base"
                 >
                   Cancel
                 </button>
@@ -504,9 +555,9 @@ const Users = () => {
 
       {/* View User Modal */}
       {viewUser && (
-        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[var(--card)] rounded-2xl w-full max-w-md mx-4 overflow-hidden shadow-xl transition-colors duration-200">
-            <div className="px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--card)] border-b border-[#E2E8E3] dark:border-[var(--border)] flex justify-between items-center transition-colors duration-200">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[var(--card)] rounded-2xl w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto shadow-xl transition-colors duration-200">
+            <div className="sticky top-0 px-4 sm:px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--card)] border-b border-[#E2E8E3] dark:border-[var(--border)] flex justify-between items-center transition-colors duration-200 z-10">
               <h2 className="font-semibold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
                 User Details
               </h2>
@@ -517,16 +568,16 @@ const Users = () => {
                 <FiXCircle className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-5 space-y-3">
+            <div className="p-4 sm:p-5 space-y-3">
               <div className="flex items-center gap-3 pb-3 border-b border-[#E2E8E3] dark:border-[var(--border)]">
-                <div className="w-12 h-12 rounded-full bg-[#8FAF9A]/10 dark:bg-[var(--accent)]/20 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-[#8FAF9A]/10 dark:bg-[var(--accent)]/20 flex items-center justify-center flex-shrink-0">
                   <FiUser className="w-6 h-6 text-[#8FAF9A] dark:text-[var(--accent)]" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+                  <p className="font-semibold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200 break-words">
                     {viewUser.name}
                   </p>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 flex-wrap">
                     {viewUser.isPremium && (
                       <FiStar className="w-3 h-3 text-yellow-500" />
                     )}
@@ -537,110 +588,246 @@ const Users = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <FiMail className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
-                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+                <FiMail className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] flex-shrink-0" />
+                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200 break-words">
                   {viewUser.email}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <FiPhone className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
-                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+                <FiPhone className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] flex-shrink-0" />
+                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200 break-words">
                   {viewUser.whatsapp || "Not provided"}
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <FiMapPin className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
-                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
+                <FiMapPin className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] flex-shrink-0" />
+                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200 break-words">
                   {viewUser.country && viewUser.city
                     ? `${viewUser.city}, ${viewUser.country}`
                     : viewUser.country || viewUser.city || "No location set"}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <FiUsers className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)]" />
-                <span className="text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
-                  Role: {viewUser.role || "user"}
-                </span>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <FiCheckCircle className="w-4 h-4 text-[#2E8B57] dark:text-[var(--accent)] flex-shrink-0" />
+                  <span className="text-[#2C2C2C] dark:text-[var(--text)]">
+                    Status: {viewUser.isActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FiCalendar className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] flex-shrink-0" />
+                  <span className="text-[#2C2C2C] dark:text-[var(--text)]">
+                    Joined: {new Date(viewUser.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Users List */}
+      {/* Users Table - Responsive */}
       {users.length === 0 ? (
-        <div className="text-center py-16 bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] transition-colors duration-200">
-          <FiUsers className="w-12 h-12 text-[#E2E8E3] dark:text-[var(--border)] mx-auto mb-3 transition-colors duration-200" />
-          <p className="text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
+        <div className="text-center py-16 bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)]">
+          <FiUsers className="w-12 h-12 text-[#E2E8E3] dark:text-[var(--border)] mx-auto mb-3" />
+          <p className="text-[#5F6B63] dark:text-[var(--muted)]">
             No users found
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {users.map((user) => (
-            <div
-              key={user._id}
-              className="bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
-            >
-              <div className="p-4">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-[#2C2C2C] dark:text-[var(--text)] text-lg transition-colors duration-200">
-                        {user.name}
-                      </h3>
-                      {user.isPremium && (
-                        <span className="inline-flex items-center gap-1 text-xs bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 px-2 py-0.5 rounded-full transition-colors duration-200">
-                          <FiStar className="w-3 h-3" />
+        <>
+          {/* Desktop Table View - hidden on mobile */}
+          <div className="hidden lg:block overflow-x-auto bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm">
+            <table className="w-full text-sm text-left">
+              <thead className="text-xs uppercase bg-gray-50 dark:bg-[var(--surface)] text-[#5F6B63] dark:text-[var(--muted)]">
+                <tr>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Plan</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Account</th>
+                  <th className="px-4 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr
+                    key={user._id}
+                    className="border-t border-[#E2E8E3] dark:border-[var(--border)] hover:bg-gray-50 dark:hover:bg-[var(--surface)] transition"
+                  >
+                    <td className="px-4 py-3 font-medium text-[#2C2C2C] dark:text-[var(--text)]">
+                      {user.name}
+                    </td>
+                    <td className="px-4 py-3">
+                      {user.isPremium ? (
+                        <span className="inline-flex items-center gap-1 text-xs text-yellow-600 dark:text-yellow-400">
                           Premium
                         </span>
+                      ) : (
+                        <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)]">
+                          Free
+                        </span>
                       )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          user.isActive
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                            : "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+                        }`}
+                      >
+                        {user.isActive ? "Active" : "Paused"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handlePause(user)}
+                        className={`text-xs px-3 py-1.5 rounded-lg font-medium transition ${
+                          user.isActive
+                            ? "bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
+                            : "bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400"
+                        }`}
+                      >
+                        {user.isActive ? "Pause" : "Activate"}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => setViewUser(user)}
+                          className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400"
+                        >
+                          <FiEye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setEditUser(user)}
+                          className="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300"
+                        >
+                          <FiEdit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user._id, user.name)}
+                          className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
+                        >
+                          <FiTrash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View - visible on mobile and tablet */}
+          <div className="lg:hidden space-y-4">
+            {users.map((user) => (
+              <div
+                key={user._id}
+                className="bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] p-4 shadow-sm hover:shadow-md transition-all duration-200"
+              >
+                {/* Header with Name and Actions */}
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-[#2C2C2C] dark:text-[var(--text)] text-base">
+                      {user.name}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-2 mt-1">
+                      {user.isPremium ? (
+                        <span className="inline-flex items-center gap-1 text-xs text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-0.5 rounded-full">
+                          Premium
+                        </span>
+                      ) : (
+                        <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)] bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-full">
+                          Free
+                        </span>
+                      )}
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          user.isActive
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                            : "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+                        }`}
+                      >
+                        {user.isActive ? "Active" : "Paused"}
+                      </span>
                     </div>
-                    <p className="text-sm text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-                      {user.email}
-                    </p>
-                    {user.whatsapp && (
-                      <p className="text-xs text-[#5F6B63] dark:text-[var(--muted)] mt-1 transition-colors duration-200">
-                        📱 {user.whatsapp}
-                      </p>
-                    )}
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => setViewUser(user)}
-                      className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                      className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400"
                     >
-                      <FiEye className="w-3.5 h-3.5" /> View
-                    </button>
-                    <button
-                      onClick={() => handlePremium(user)}
-                      className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        user.isPremium
-                          ? "bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
-                          : "bg-[#2E8B57]/10 dark:bg-[var(--accent)]/20 text-[#2E8B57] dark:text-[var(--accent)] hover:bg-[#2E8B57]/20 dark:hover:bg-[var(--accent)]/30"
-                      }`}
-                    >
-                      <FiStar className="w-3.5 h-3.5" />{" "}
-                      {user.isPremium ? "Remove Premium" : "Make Premium"}
+                      <FiEye className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setEditUser(user)}
-                      className="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                      className="p-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300"
                     >
-                      <FiEdit2 className="w-3.5 h-3.5" /> Edit
+                      <FiEdit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(user._id, user.name)}
-                      className="inline-flex items-center gap-1 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200"
+                      className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
                     >
-                      <FiTrash2 className="w-3.5 h-3.5" /> Delete
+                      <FiTrash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
+
+                {/* Email */}
+                <div className="flex items-center gap-2 text-sm mb-2">
+                  <FiMail className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] flex-shrink-0" />
+                  <span className="text-[#2C2C2C] dark:text-[var(--text)] break-all">
+                    {user.email}
+                  </span>
+                </div>
+
+                {/* WhatsApp */}
+                {user.whatsapp && (
+                  <div className="flex items-center gap-2 text-sm mb-2">
+                    <FiPhone className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] flex-shrink-0" />
+                    <span className="text-[#2C2C2C] dark:text-[var(--text)]">
+                      {user.whatsapp}
+                    </span>
+                  </div>
+                )}
+
+                {/* Location */}
+                {(user.country || user.city) && (
+                  <div className="flex items-center gap-2 text-sm mb-3">
+                    <FiMapPin className="w-4 h-4 text-[#8FAF9A] dark:text-[var(--accent)] flex-shrink-0" />
+                    <span className="text-[#2C2C2C] dark:text-[var(--text)]">
+                      {user.city && user.country
+                        ? `${user.city}, ${user.country}`
+                        : user.country || user.city}
+                    </span>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-[#E2E8E3] dark:border-[var(--border)]">
+                  <button
+                    onClick={() => handlePause(user)}
+                    className={`flex-1 text-xs px-3 py-2 rounded-lg font-medium transition ${
+                      user.isActive
+                        ? "bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
+                        : "bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400"
+                    }`}
+                  >
+                    {user.isActive ? "Pause Account" : "Activate Account"}
+                  </button>
+                  <button
+                    onClick={() => handlePremium(user)}
+                    className="flex-1 text-xs px-3 py-2 rounded-lg font-medium bg-yellow-50 text-yellow-600 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400 transition"
+                  >
+                    {user.isPremium ? "Remove Premium" : "Make Premium"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

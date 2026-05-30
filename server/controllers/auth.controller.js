@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
-import generateToken from "../utils/generateToken.js";
+import { generateToken } from "../utils/generateToken.js";
 import { sendEmail } from "../services/email.service.js";
 
 // REGISTER
@@ -51,6 +51,12 @@ export const login = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (!user.isActive) {
+      return res.status(403).json({
+        message: "Your account is suspended. Please contact admin.",
+      });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -75,13 +81,13 @@ export const login = async (req, res) => {
         country: user.country,
         city: user.city,
         settings: user.settings,
+        status: user.isActive, // optional but good to send
       },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 export const getMe = async (req, res) => {
   res.json({
     data: req.user, // from JWT middleware

@@ -1,86 +1,129 @@
-import Topic from "../models/Topic.js";
 import Lesson from "../models/Lesson.js";
+import Topic from "../models/Topic.js";
 
-// CREATE TOPIC (ADMIN ONLY)
-export const createTopic = async (req, res) => {
+// CREATE LESSON (ADMIN)
+export const createLesson = async (req, res) => {
   try {
-    const { title, description, isPremium, order, isPublished } = req.body;
+    const { topicId, questionText, audioUrl, answerText, order, isPremium } =
+      req.body;
 
-    const topic = await Topic.create({
-      title,
-      description,
-      isPremium,
+    const lesson = await Lesson.create({
+      topicId,
+      questionText,
+      audioUrl,
+      answerText,
       order,
-      isPublished: isPublished ?? false, // important
+      isPremium,
     });
 
-    res.status(201).json(topic);
+    res.status(201).json(lesson);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const getTopics = async (req, res) => {
+export const getPublishedLessons = async (req, res) => {
   try {
-    const topics = await Topic.aggregate([
-      {
-        $match: {
-          isPublished: true,
-        },
-      },
-      {
-        $lookup: {
-          from: "lessons",
-          localField: "_id",
-          foreignField: "topicId",
-          as: "lessons",
-        },
-      },
-      {
-        $addFields: {
-          lessonCount: { $size: "$lessons" },
-        },
-      },
-      {
-        $project: {
-          lessons: 0,
-        },
-      },
-    ]);
+    const { topicId } = req.query;
 
-    res.json(topics);
+    const filter = {
+      isPublished: true,
+    };
+
+    if (topicId) filter.topicId = topicId;
+
+    const lessons = await Lesson.find(filter)
+      .populate("topicId", "title")
+      .sort({ order: 1, createdAt: 1 });
+
+    res.json(lessons);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// GET LESSONS BY TOPIC (PUBLIC)
+export const getLessonsByTopic = async (req, res) => {
+  try {
+    const lessons = await Lesson.find({
+      topicId: req.params.topicId,
+      isPublished: true,
+    }).sort({ order: 1, createdAt: 1 });
+
+    res.json(lessons);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// UPDATE LESSON (ADMIN)
+export const updateLesson = async (req, res) => {
+  try {
+    const lesson = await Lesson.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    res.json(lesson);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// DELETE LESSON (ADMIN)
+export const deleteLesson = async (req, res) => {
+  try {
+    await Lesson.findByIdAndDelete(req.params.id);
+    res.json({ message: "Lesson deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getAllLessons = async (req, res) => {
+  try {
+    const { page = 1, topicId, search = "" } = req.query;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+
+    if (topicId) filter.topicId = topicId;
+
+    if (search) {
+      filter.questionText = { $regex: search, $options: "i" };
+    }
+
+    const lessons = await Lesson.find(filter)
+      .populate("topicId", "title")
+      .skip(skip)
+      .limit(limit)
+      .sort({ order: 1, createdAt: 1 });
+
+    const total = await Lesson.countDocuments(filter);
+
+    res.json({
+      lessons,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-export const getTopicsAdmin = async (req, res) => {
+export const uploadAudio = async (req, res) => {
   try {
-    const topics = await Topic.find().sort({ order: 1 });
-    res.json(topics);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
 
-// UPDATE TOPIC (ADMIN)
-export const updateTopic = async (req, res) => {
-  try {
-    const topic = await Topic.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+    const fileUrl = `/uploads/${req.file.filename}`;
+
+    res.status(200).json({
+      message: "Audio uploaded successfully",
+      fileUrl,
     });
-
-    res.json(topic);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// DELETE TOPIC (ADMIN)
-export const deleteTopic = async (req, res) => {
-  try {
-    await Topic.findByIdAndDelete(req.params.id);
-    res.json({ message: "Topic deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

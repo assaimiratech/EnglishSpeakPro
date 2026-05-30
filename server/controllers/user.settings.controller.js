@@ -22,7 +22,7 @@ export const changeEmailRequest = async (req, res) => {
 
     await user.save();
 
-    const link = `http://localhost:5000/api/auth/verify-email/${token}?email=${newEmail}`;
+    const link = `https://englishspeakpro-e7ve.onrender.com/api/auth/verify-email/${token}?email=${newEmail}`;
 
     await sendEmail({
       to: newEmail,

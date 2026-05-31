@@ -22,10 +22,13 @@ import { getLessonsByTopic, markLessonComplete } from "../../api/lessons.api";
 
 const getAudioUrl = (url) => {
   if (!url) return "";
+
   if (url.startsWith("http")) return url;
+
   const base =
     import.meta.env.VITE_API_BASE_URL ||
-    "https://englishspeakpro-e7ve.onrender.com/";
+    "https://englishspeakpro-e7ve.onrender.com";
+
   return `${base}${url}`;
 };
 

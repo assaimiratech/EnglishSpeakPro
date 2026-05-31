@@ -1,8 +1,14 @@
 import api from "./api";
 
 /* ADMIN - GET ALL LESSONS (DRAFT + PUBLISHED) */
-export const getLessonsAdmin = async (params) => {
-  const res = await api.get("/lessons/admin", { params });
+export const getLessonsAdmin = async (topicId, search = "") => {
+  const res = await api.get("/lessons/admin", {
+    params: {
+      topicId,
+      search,
+    },
+  });
+
   return res.data;
 };
 

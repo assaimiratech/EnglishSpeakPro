@@ -62,7 +62,7 @@ const Login = () => {
         return;
       }
       if (decoded.role === "admin") {
-        navigate("/naja", { replace: true });
+        navigate("/admin", { replace: true });
       } else {
         navigate("/topics", { replace: true });
       }
@@ -269,24 +269,6 @@ const Login = () => {
                 <FiArrowRight className="inline ml-1 w-3 h-3" />
               </Link>
             </p>
-          </div>
-        </motion.div>
-
-        {/* Trust Badges */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-center gap-4 mt-6"
-        >
-          <div className="flex items-center gap-1 text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-            <FiShield className="w-3 h-3 text-[#8FAF9A] dark:text-[var(--accent)]" />
-            <span>Secure Login</span>
-          </div>
-          <div className="w-px h-3 bg-[#E2E8E3] dark:bg-[var(--border)]" />
-          <div className="flex items-center gap-1 text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-            <FiCheckCircle className="w-3 h-3 text-[#2E8B57] dark:text-[var(--accent)]" />
-            <span>Privacy Protected</span>
           </div>
         </motion.div>
       </motion.div>

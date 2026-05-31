@@ -3,11 +3,17 @@ import bcrypt from "bcrypt";
 
 // GET ALL USERS (ADMIN)
 export const getUsers = async (req, res) => {
-  const users = await User.find({
-    role: "user",
-  }).select("-password");
+  try {
+    const users = await User.find({ role: "user" })
+      .select("-password")
+      .sort({ createdAt: -1 }); // newest first
 
-  res.json(users);
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || "Failed to fetch users",
+    });
+  }
 };
 
 // CREATE USER (ADMIN)

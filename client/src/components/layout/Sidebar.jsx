@@ -10,27 +10,27 @@ import {
 const Sidebar = () => {
   const navItems = [
     {
-      path: "/naja",
+      path: "/admin",
       label: "Dashboard",
       icon: <FiHome className="w-4 h-4" />,
     },
     {
-      path: "/naja/users",
+      path: "/admin/users",
       label: "Users",
       icon: <FiUsers className="w-4 h-4" />,
     },
     {
-      path: "/naja/topics",
+      path: "/admin/topics",
       label: "Topics",
       icon: <FiBookOpen className="w-4 h-4" />,
     },
     {
-      path: "/naja/lessons",
+      path: "/admin/lessons",
       label: "Lessons",
       icon: <FiFileText className="w-4 h-4" />,
     },
     {
-      path: "/naja/settings",
+      path: "/admin/settings",
       label: "Settings",
       icon: <FiSettings className="w-4 h-4" />,
     },

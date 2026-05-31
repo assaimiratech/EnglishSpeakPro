@@ -92,7 +92,7 @@ const HeroSection = () => {
     }
   };
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--bg)] py-16 md:py-20 lg:py-28 transition-colors duration-200">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#F7F9F7] to-white dark:from-[var(--surface)] dark:to-[var(--bg)] py-16 md:py-15 lg:py-15 transition-colors duration-200">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 w-72 h-72 bg-[#8FAF9A]/10 dark:bg-[var(--accent)]/10 rounded-full blur-3xl animate-pulse-slow" />
@@ -100,40 +100,9 @@ const HeroSection = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-[#8FAF9A]/5 to-[#2E8B57]/5 dark:from-[var(--accent)]/5 dark:to-[var(--accent)]/5 rounded-full blur-3xl animate-pulse-slow animation-delay-2000" />
       </div>
 
-      {/* Floating Elements */}
-      <div
-        className="
-    absolute
-    top-4 left-4
-    xs:top-5 xs:left-6
-    sm:top-10 sm:left-10
-    md:top-16 md:left-14
-    lg:top-24 lg:left-20
-    xl:top-32 xl:left-24
-    2xl:top-40 2xl:left-32
-    animate-float
-  "
-      >
-        {" "}
-        <div className="flex items-center gap-2 group relative">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden">
-            <img
-              src="/logo.svg"
-              alt="EnglishSpeakPro Logo"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-          <div className="relative">
-            <span className="font-bold text-base sm:text-lg text-[#2C2C2C] tracking-tight">
-              English<span className="text-[#2E8B57]">SpeakPro</span>
-            </span>
-            <div className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#8FAF9A] to-[#2E8B57] rounded-full" />
-          </div>
-        </div>
-      </div>
-      <div className="absolute bottom-24 right-4 sm:bottom-32 sm:right-10 opacity-20 dark:opacity-10 animate-float-delayed hidden md:block">
+      {/* <div className="absolute bottom-24 right-4 sm:bottom-32 sm:right-10 opacity-20 dark:opacity-10 animate-float-delayed hidden md:block">
         <FiTrendingUp className="w-10 h-10 sm:w-12 sm:h-12 text-[#8FAF9A]" />
-      </div>
+      </div> */}
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 text-center">
         {/* Badge */}
@@ -163,16 +132,15 @@ const HeroSection = () => {
 
         {/* Description */}
         <p
-          className={`text-base sm:text-lg md:text-xl text-[#5F6B63] dark:text-[var(--muted)] mt-4 max-w-2xl mx-auto leading-relaxed transition-colors duration-200 ${animated ? "animate-fade-in-up animation-delay-100" : "opacity-0"}`}
+          className={`text-base sm:text-lg md:text-xl text-[#5F6B63] dark:text-[var(--muted)] mt-0 max-w-2xl mx-auto leading-relaxed transition-colors duration-200 ${animated ? "animate-fade-in-up animation-delay-100" : "opacity-0"}`}
         >
           Master real-world conversations through interactive practice sessions.
-          Improve your fluency, build confidence, and speak English
-          naturally.{" "}
+          Improve your fluency, build confidence, and speak English naturally.
         </p>
 
         {/* CTA Buttons */}
         <div
-          className={`flex flex-col sm:flex-row gap-4 justify-center mt-8 md:mt-10 ${animated ? "animate-fade-in-up animation-delay-200" : "opacity-0"}`}
+          className={`flex flex-col sm:flex-row gap-4 justify-center mt-5 md:mt-10 ${animated ? "animate-fade-in-up animation-delay-200" : "opacity-0"}`}
         >
           <button
             onClick={handleBtnClick}
@@ -185,7 +153,7 @@ const HeroSection = () => {
               gap-2
               bg-[#2E8B57]
               hover:bg-[#257149]
-              dark:bg-[var(--accent)]
+              dark:bg-[#2E8B57]
               dark:hover:bg-[#257149]
               text-white
               px-8

@@ -170,7 +170,6 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
               </div>
             </div>
 
-            {/* Controls Group */}
             <div className="flex items-center justify-between w-full sm:w-auto gap-2">
               {/* Volume Control */}
               <div className="flex items-center gap-2">
@@ -251,26 +250,6 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
                   </>
                 )}
               </div>
-
-              {/* Minimize/Close Buttons */}
-              {/* <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setIsMinimized(true)}
-                  className="p-2 rounded-lg text-[#5F6B63] hover:bg-[#F1F4F1] transition-all duration-200"
-                  aria-label="Minimize"
-                >
-                  <FiMinimize2 className="w-4 h-4" />
-                </button>
-                {onClose && (
-                  <button
-                    onClick={onClose}
-                    className="p-2 rounded-lg text-[#5F6B63] hover:bg-[#F1F4F1] transition-all duration-200"
-                    aria-label="Close"
-                  >
-                    <FiVolumeX className="w-4 h-4 rotate-45" />
-                  </button>
-                )}
-              </div> */}
             </div>
           </div>
         </div>

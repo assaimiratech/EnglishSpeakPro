@@ -358,3 +358,20 @@ html.dark .mobile-sidebar-backdrop {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+.react-select-container .react-select__control {
+  border-radius: 12px;
+  border: 1px solid #e2e8e3;
+  background: white;
+  min-height: 42px;
+}
+
+.dark .react-select-container .react-select__control {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.react-select__menu {
+  border-radius: 12px;
+}

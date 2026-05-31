@@ -104,8 +104,8 @@ export const getAllLessons = async (req, res) => {
     res.json({
       lessons,
       total,
-      page: Number(page),
-      pages: Math.ceil(total / limit),
+      // page: Number(page),
+      // pages: Math.ceil(total / limit),
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

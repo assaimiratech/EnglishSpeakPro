@@ -42,9 +42,26 @@ const RequestPremiumModal = ({ isOpen, onClose }) => {
       return;
     }
 
+    const name = form.name.trim();
+    const email = form.email.trim();
+    const whatsapp = form.whatsapp.trim();
+
+    // WHATSAPP (10 digits only)
+    if (!/^\d{10}$/.test(whatsapp)) {
+      showToast("WhatsApp number must be exactly 10 digits", "warning");
+      return;
+    }
+
     try {
       setLoading(true);
-      await api.post("/premium", form);
+
+      await api.post("/premium", {
+        ...form,
+        name,
+        email,
+        whatsapp,
+      });
+
       showToast("Request sent successfully!", "success");
       setTimeout(() => onClose(), 1200);
     } catch (err) {
@@ -129,6 +146,7 @@ const RequestPremiumModal = ({ isOpen, onClose }) => {
                     onChange={handleChange}
                     className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] bg-white dark:bg-[var(--card)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] transition-all duration-200 outline-none text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
                     placeholder="Your name"
+                    readOnly
                   />
                 </div>
               </div>
@@ -146,6 +164,7 @@ const RequestPremiumModal = ({ isOpen, onClose }) => {
                     onChange={handleChange}
                     className="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] bg-white dark:bg-[var(--card)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] transition-all duration-200 outline-none text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
                     placeholder="your@email.com"
+                    readOnly
                   />
                 </div>
               </div>

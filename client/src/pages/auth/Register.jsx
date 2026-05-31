@@ -20,6 +20,9 @@ import { TbBrandGooglePodcasts } from "react-icons/tb";
 import { registerUser } from "../../api/auth.api";
 import { setToken } from "../../utils/token";
 import toast from "react-hot-toast";
+import Select from "react-select";
+import countryList from "react-select-country-list";
+import { useMemo } from "react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -44,24 +47,37 @@ const Register = () => {
   };
 
   const validateForm = () => {
-    if (!form.name.trim()) {
+    if (!/^[a-zA-Z\s]{3,}$/.test(form.name.trim()) && form.name.length < 3) {
       setError("Please enter your full name");
       return false;
     }
-    if (!form.email.includes("@")) {
+    if (!form.email.includes("@gmail.com")) {
       setError("Please enter a valid email address");
       return false;
     }
-    if (form.password.length < 6) {
-      setError("Password must be at least 6 characters");
+    if (form.password.length < 8) {
+      setError("Password must be at least 8 characters");
       return false;
     }
-    if (!agreeTerms) {
-      setError("Please agree to the terms and conditions");
+    if (form.whatsapp.length !== 10) {
+      setError("WhatsApp number must be 10 digits");
+      return false;
+    }
+    // if (!agreeTerms) {
+    //   setError("Please agree to the terms and conditions");
+    //   return false;
+    // }
+    if (!/^[a-zA-Z\s]{3,}$/.test(form.country.trim())) {
+      setError("Please enter your country");
+      return false;
+    }
+    if (!/^[a-zA-Z\s]{3,}$/.test(form.city.trim())) {
+      setError("Please enter your city");
       return false;
     }
     return true;
   };
+  const options = useMemo(() => countryList().getData(), []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -255,16 +271,58 @@ const Register = () => {
                 <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1.5 transition-colors duration-200">
                   Country
                 </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="country"
-                    placeholder="Country"
-                    value={form.country}
-                    onChange={handleChange}
-                    className="w-full pl-3 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white/50 dark:bg-[var(--card)]/50 text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
-                  />
-                </div>
+                <Select
+                  options={options}
+                  value={options.find((c) => c.value === form.country)}
+                  onChange={(val) => setForm({ ...form, country: val.label })}
+                  placeholder="Country"
+                  styles={{
+                    control: (base, state) => ({
+                      ...base,
+                      backgroundColor: "transparent",
+                      borderColor: state.isFocused
+                        ? "var(--border)"
+                        : "#8c8c8c",
+                      boxShadow: state.isFocused
+                        ? "0 0 0 2px rgba(143,175,154,0.2)"
+                        : "none",
+                      borderRadius: "12px",
+                      padding: "2px",
+                      fontSize: "14px",
+                      "&:hover": {
+                        borderColor: "#8FAF9A",
+                      },
+                    }),
+
+                    menu: (base) => ({
+                      ...base,
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                      backgroundColor: "#fff",
+                    }),
+
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isFocused ? "#F1F4F1" : "white",
+                      color: "#2C2C2C",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      ":active": {
+                        backgroundColor: "#E2E8E3",
+                      },
+                    }),
+
+                    singleValue: (base) => ({
+                      ...base,
+                      color: "#2C2C2C",
+                    }),
+
+                    placeholder: (base) => ({
+                      ...base,
+                      color: "#5F6B63",
+                    }),
+                  }}
+                />
               </div>
 
               {/* City Field */}
@@ -285,7 +343,7 @@ const Register = () => {
               </div>
 
               {/* Terms and Conditions */}
-              <label className="flex items-start gap-2 cursor-pointer">
+              {/* <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={agreeTerms}
@@ -308,7 +366,7 @@ const Register = () => {
                     Privacy Policy
                   </Link>
                 </span>
-              </label>
+              </label> */}
 
               {/* Submit Button */}
               <motion.button

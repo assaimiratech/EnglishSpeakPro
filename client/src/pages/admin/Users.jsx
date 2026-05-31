@@ -28,6 +28,9 @@ import {
   updateUser,
   createUser,
 } from "../../api/users.api";
+import { useMemo } from "react";
+import Select from "react-select";
+import countryList from "react-select-country-list";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -37,6 +40,9 @@ const Users = () => {
   const [editUser, setEditUser] = useState(null);
   const [toast, setToast] = useState(null);
   const [viewUser, setViewUser] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [saving, setSaving] = useState(false);
+
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -67,16 +73,19 @@ const Users = () => {
       setLoading(false);
     }
   };
+  const countryOptions = useMemo(() => countryList().getData(), []);
 
   const handleDelete = async (id, name) => {
-    if (!window.confirm(`Delete user "${name}"? This action cannot be undone.`))
-      return;
+    setSaving(true);
     try {
       await deleteUser(id);
       setUsers(users.filter((u) => u._id !== id));
-      showToast(`User "${name}" deleted successfully`, "success");
+      showToast(`User deleted successfully`, "success");
+      setDeleteConfirm(null);
     } catch (err) {
-      showToast(err.message || "Failed to delete user", "error");
+      showToast("Failed to delete topic", "error");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -212,6 +221,40 @@ const Users = () => {
             <span className="text-sm font-medium break-words">
               {toast.message}
             </span>
+          </div>
+        </div>
+      )}
+
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[var(--card)] rounded-2xl max-w-md w-full mx-4 overflow-hidden shadow-xl">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+                <FiAlertCircle className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#2C2C2C] dark:text-[var(--text)] mb-2">
+                Confirm Delete
+              </h3>
+              <p className="text-sm text-[#5F6B63] dark:text-[var(--muted)] mb-6">
+                Are you sure you want to delete "{deleteConfirm.title}"? This
+                action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleDelete(deleteConfirm.id)}
+                  disabled={saving}
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200"
+                >
+                  {saving ? "Deleting..." : "Delete"}
+                </button>
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className="flex-1 border border-[#E2E8E3] text-[#5F6B63] hover:bg-[#F1F4F1] px-4 py-2 rounded-xl font-medium transition-all duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -358,14 +401,20 @@ const Users = () => {
                   Country
                 </label>
                 <div className="relative">
-                  <input
-                    type="text"
-                    value={newUser.country}
-                    onChange={(e) =>
-                      setNewUser({ ...newUser, country: e.target.value })
+                  <Select
+                    options={countryOptions}
+                    value={countryOptions.find(
+                      (c) => c.label === newUser.country,
+                    )}
+                    onChange={(selected) =>
+                      setNewUser({
+                        ...newUser,
+                        country: selected?.label || "",
+                      })
                     }
-                    className="w-full pl-3 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
-                    placeholder="Country"
+                    placeholder="Select country"
+                    className="react-select-container"
+                    classNamePrefix="react-select"
                   />
                 </div>
               </div>
@@ -470,18 +519,53 @@ const Users = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1">
                   Country
                 </label>
-                <div className="relative">
-                  <input
-                    value={editUser.country || ""}
-                    onChange={(e) =>
-                      setEditUser({ ...editUser, country: e.target.value })
-                    }
-                    className="w-full pl-3 pr-3 py-2 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
-                  />
-                </div>
+                <Select
+                  options={countryOptions}
+                  value={
+                    countryOptions.find((c) => c.label === editUser.country) ||
+                    null
+                  }
+                  onChange={(val) =>
+                    setEditUser({
+                      ...editUser,
+                      country: val.label,
+                    })
+                  }
+                  placeholder="Select country"
+                  styles={{
+                    control: (base, state) => ({
+                      ...base,
+                      backgroundColor: "white",
+                      borderColor: state.isFocused ? "#8FAF9A" : "#E2E8E3",
+                      borderRadius: "12px",
+                      boxShadow: state.isFocused
+                        ? "0 0 0 2px rgba(143,175,154,0.2)"
+                        : "none",
+                      padding: "2px",
+                    }),
+
+                    menu: (base) => ({
+                      ...base,
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }),
+
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isFocused ? "#F1F4F1" : "white",
+                      color: "#2C2C2C",
+                      cursor: "pointer",
+                    }),
+
+                    singleValue: (base) => ({
+                      ...base,
+                      color: "#2C2C2C",
+                    }),
+                  }}
+                />{" "}
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
@@ -706,7 +790,12 @@ const Users = () => {
                           <FiEdit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(user._id, user.name)}
+                          onClick={() =>
+                            setDeleteConfirm({
+                              id: user._id,
+                              title: user.name,
+                            })
+                          }
                           className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
                         >
                           <FiTrash2 className="w-4 h-4" />
@@ -767,7 +856,12 @@ const Users = () => {
                       <FiEdit2 className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => handleDelete(user._id, user.name)}
+                      onClick={() =>
+                        setDeleteConfirm({
+                          id: user._id,
+                          title: user.name,
+                        })
+                      }
                       className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
                     >
                       <FiTrash2 className="w-4 h-4" />

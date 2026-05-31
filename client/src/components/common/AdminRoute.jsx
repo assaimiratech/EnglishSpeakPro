@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { getToken } from "../../utils/token";
 import { jwtDecode } from "jwt-decode";
 
@@ -16,7 +16,7 @@ const AdminRoute = ({ children }) => {
       return <Navigate to="/topics" replace />;
     }
 
-    return children;
+    return <Outlet />;
   } catch {
     return <Navigate to="/login" replace />;
   }

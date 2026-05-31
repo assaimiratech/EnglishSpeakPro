@@ -157,16 +157,6 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
-            {/* <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-              <Link
-                to="/pricing"
-                className="relative px-4 py-2 text-sm font-medium text-[#5F6B63] hover:text-[#2E8B57] transition-colors duration-200 group"
-              >
-                Pricing
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-[#8FAF9A] to-[#2E8B57] rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
-              </Link>
-            </motion.div> */}
-
             {/* IF NOT LOGGED IN */}
             {!user ? (
               <div className="flex items-center gap-2 ml-4">
@@ -325,15 +315,6 @@ const Navbar = () => {
             className="md:hidden p-2 rounded-xl text-[#5F6B63] dark:text-[var(--muted)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--card)] transition-all duration-200 relative"
             aria-label="Toggle menu"
           >
-            {/* {notifications > 0 && !isMobileMenuOpen && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[8px] text-white flex items-center justify-center font-bold"
-              >
-                {notifications}
-              </motion.div>
-            )} */}
             {isMobileMenuOpen ? (
               <FiX className="w-5 h-5" />
             ) : (

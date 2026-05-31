@@ -72,15 +72,6 @@ const Dashboard = () => {
       trendUp: true,
     },
     {
-      title: "Lessons",
-      value: stats.totalLessons,
-      icon: <FiFileText className="w-5 h-5" />,
-      color: "from-purple-500/10 to-purple-500/5",
-      iconColor: "text-purple-600 dark:text-purple-400",
-      trend: "+15",
-      trendUp: true,
-    },
-    {
       title: "Active Users",
       value: stats.activeUsersLast7Days,
       icon: <FiActivity className="w-5 h-5" />,
@@ -130,7 +121,7 @@ const Dashboard = () => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {statItems.map((stat, index) => (
               <StatCard
                 key={index}

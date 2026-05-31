@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FiMenu, FiBell, FiUser, FiSearch } from "react-icons/fi";
 import AdminSidebar from "../admin/AdminSidebar";
+import { Outlet } from "react-router-dom";
 import MobileSidebar from "../admin/MobileSidebar";
 
 const AdminLayout = ({ children }) => {
@@ -32,38 +33,12 @@ const AdminLayout = ({ children }) => {
         </div>
 
         {/* Desktop Topbar (Optional) */}
-        <div className="hidden md:flex items-center justify-between px-6 py-4 bg-white border-b border-[#E2E8E3] sticky top-0 z-30 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#5F6B63]" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="pl-9 pr-4 py-2 text-sm rounded-xl border border-[#E2E8E3] bg-[#F7F9F7] focus:bg-white focus:border-[#8FAF9A] focus:ring-1 focus:ring-[#8FAF9A] transition-all duration-200 outline-none w-64"
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button className="p-2 rounded-xl text-[#5F6B63] hover:bg-[#F1F4F1] hover:text-[#2C2C2C] transition-all duration-200 relative">
-              {/* <FiBell className="w-5 h-5" /> */}
-            </button>
-
-            <button className="flex items-center gap-2 p-2 rounded-xl text-[#5F6B63] hover:bg-[#F1F4F1] transition-all duration-200 relative">
-              <div className="w-8 h-8 rounded-full bg-[#8FAF9A]/10 flex items-center justify-center">
-                <FiUser className="w-4 h-4 text-[#8FAF9A]" />
-                <span className="absolute top-3 left-1 w-2 h-2 bg-[#2E8B57] rounded-full"></span>
-              </div>
-              <span className="text-sm font-medium text-[#2C2C2C] hidden lg:inline">
-                Mr. Naja
-              </span>
-            </button>
-          </div>
-        </div>
 
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">{children}</div>
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

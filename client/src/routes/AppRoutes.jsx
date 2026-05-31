@@ -9,7 +9,6 @@ import Lessons from "../pages/app/Lessons";
 import Settings from "../pages/app/Settings";
 
 import AppLayout from "../components/layout/AppLayout";
-import Pricing from "../pages/public/Pricing";
 import Profile from "../pages/public/Profile";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -20,16 +19,6 @@ const AppRoutes = () => {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route
-        path="/pricing"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Pricing />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
       <Route
         path="/profile"
         element={

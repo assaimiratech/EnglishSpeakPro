@@ -22,46 +22,62 @@ const MobileSidebar = ({ open, setOpen }) => {
 
   const navItems = [
     {
-      path: "/naja",
+      path: "/admin",
       label: "Dashboard",
       icon: <FiHome className="w-5 h-5" />,
     },
     {
-      path: "/naja/users",
+      path: "/admin/users",
       label: "Users",
       icon: <FiUsers className="w-5 h-5" />,
     },
     {
-      path: "/naja/topics",
-      label: "Topics",
-      icon: <FiBookOpen className="w-5 h-5" />,
-    },
-    {
-      path: "/naja/lessons",
-      label: "Lessons",
+      path: "/admin/content",
+      label: "Content",
       icon: <FiFileText className="w-5 h-5" />,
     },
     {
-      path: "/naja/premium",
+      path: "/admin/premium",
       label: "Premium Requests",
       icon: <FiStar className="w-5 h-5" />,
     },
     {
-      path: "/naja/settings",
+      path: "/admin/settings",
       label: "Settings",
       icon: <FiSettings className="w-5 h-5" />,
+    },
+    {
+      path: "/",
+      label: "Preview",
+      icon: <FiFileText className="w-4 h-4" />,
     },
   ];
 
   const isActive = (path) => {
-    if (path === "/naja" && location.pathname === "/naja") return true;
-    if (path !== "/naja" && location.pathname.startsWith(path)) return true;
-    return false;
+    const current = location.pathname;
+
+    // Preview should only be active on exact "/"
+    if (path === "/") {
+      return current === "/";
+    }
+
+    if (path === "/admin") {
+      return current === "/admin";
+    }
+
+    if (
+      path === "/admin/content" &&
+      (current.startsWith("/admin/content") ||
+        current.startsWith("/admin/lessons"))
+    ) {
+      return true;
+    }
+
+    return current.startsWith(path);
   };
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden transition-opacity duration-300"
         onClick={() => setOpen(false)}
@@ -74,7 +90,11 @@ const MobileSidebar = ({ open, setOpen }) => {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-xl bg-[#8FAF9A]/10 dark:bg-[#8FAF9A]/20 flex items-center justify-center transition-colors duration-200">
-                <TbBrandGooglePodcasts className="w-5 h-5 text-[#8FAF9A]" />
+                <img
+                  src="/logo.svg"
+                  alt="EnglishSpeakPro Logo"
+                  className="w-15 h-15 rounded-lg"
+                />
               </div>
               <h2 className="text-lg font-bold text-[#2C2C2C] dark:text-[var(--text)] tracking-tight transition-colors duration-200">
                 English<span className="text-[#8FAF9A]">SpeakPro</span>
@@ -93,7 +113,6 @@ const MobileSidebar = ({ open, setOpen }) => {
           </p>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 flex flex-col gap-1 p-4 overflow-y-auto">
           {navItems.map((item) => (
             <Link
@@ -105,7 +124,7 @@ const MobileSidebar = ({ open, setOpen }) => {
                 transition-all duration-200 group
                 ${
                   isActive(item.path)
-                    ? "bg-[#8FAF9A] text-white shadow-sm"
+                    ? "bg-[#2E8B57] text-white shadow-sm"
                     : "text-[#5F6B63] dark:text-[var(--muted)] hover:bg-[#F1F4F1] dark:hover:bg-[var(--card)] hover:text-[#2C2C2C] dark:hover:text-[var(--text)]"
                 }
               `}
@@ -130,7 +149,6 @@ const MobileSidebar = ({ open, setOpen }) => {
           ))}
         </nav>
 
-        {/* Footer */}
         <div className="p-4 border-t border-[#E2E8E3] dark:border-[var(--border)]">
           <div className="bg-[#F1F4F1] dark:bg-[var(--card)] rounded-xl p-3 mb-3 transition-colors duration-200">
             <div className="flex items-center gap-2 mb-2">

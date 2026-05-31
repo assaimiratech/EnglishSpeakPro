@@ -5,17 +5,17 @@ const lessonSchema = new mongoose.Schema(
     topicId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Topic",
-      required: true,
+      required: false,
     },
 
     questionText: {
       type: String,
-      required: true,
+      required: false,
     },
 
     audioUrl: {
       type: String,
-      required: true,
+      required: false,
     },
 
     answerText: {

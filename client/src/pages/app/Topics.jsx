@@ -42,7 +42,7 @@ const Topics = () => {
   const handleClick = (topic) => {
     const locked = topic.isPremium && !user?.isPremium;
     if (locked) {
-      navigate("/pricing");
+      navigate("/#pricing");
     } else {
       navigate(`/lessons/${topic._id}`, {
         state: { topicTitle: topic.title },
@@ -204,7 +204,7 @@ const Topics = () => {
                 </div>
               </div>
               <button
-                onClick={() => navigate("/pricing")}
+                onClick={() => navigate("/#pricing")}
                 className="px-6 py-2.5 bg-gradient-to-r from-[#2E8B57] to-[#257149] hover:from-[#257149] hover:to-[#1f5e3c] text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200"
               >
                 Upgrade Now →

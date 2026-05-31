@@ -16,7 +16,7 @@ const LessonHeader = ({ topicTitle, current, total, progress = null }) => {
       </div>
 
       {/* Title */}
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#2C2C2C] tracking-tight">
+      <h1 className="text-xl sm:text-2xl md:text-2xl font-bold text-[#2C2C2C] tracking-tight">
         Question {current} of {total}
       </h1>
     </div>

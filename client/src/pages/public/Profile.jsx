@@ -19,6 +19,9 @@ import {
   FiMapPin,
 } from "react-icons/fi";
 import { getMe, updateProfile, changePassword } from "../../api/auth.api";
+import { useMemo } from "react";
+import Select from "react-select";
+import countryList from "react-select-country-list";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -34,6 +37,7 @@ const Profile = () => {
     country: "",
     city: "",
   });
+  const countryOptions = useMemo(() => countryList().getData(), []);
 
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -385,23 +389,50 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1 transition-colors duration-200">
+                  <label className="block text-sm font-medium text-[#2C2C2C] dark:text-[var(--text)] mb-1">
                     Country
                   </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={profileForm.country}
-                      onChange={(e) =>
-                        setProfileForm({
-                          ...profileForm,
-                          country: e.target.value,
-                        })
-                      }
-                      className="w-full pl-3 pr-3 py-2.5 rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-2 focus:ring-[#8FAF9A]/20 dark:focus:ring-[var(--accent)]/20 outline-none transition-all bg-white dark:bg-[var(--card)] text-[#2C2C2C] dark:text-[var(--text)]"
-                      placeholder="Country"
-                    />
-                  </div>
+
+                  <Select
+                    options={countryOptions}
+                    value={
+                      countryOptions.find(
+                        (c) => c.label === profileForm.country,
+                      ) || null
+                    }
+                    onChange={(val) =>
+                      setProfileForm({
+                        ...profileForm,
+                        country: val.label,
+                      })
+                    }
+                    placeholder="Select country"
+                    styles={{
+                      control: (base, state) => ({
+                        ...base,
+                        backgroundColor: "white",
+                        borderColor: state.isFocused ? "#8FAF9A" : "#E2E8E3",
+                        borderRadius: "12px",
+                        padding: "2px",
+                        boxShadow: state.isFocused
+                          ? "0 0 0 2px rgba(143,175,154,0.2)"
+                          : "none",
+                      }),
+
+                      menu: (base) => ({
+                        ...base,
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                      }),
+
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isFocused ? "#F1F4F1" : "white",
+                        color: "#2C2C2C",
+                        cursor: "pointer",
+                      }),
+                    }}
+                  />
                 </div>
 
                 <div>

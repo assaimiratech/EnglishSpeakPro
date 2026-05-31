@@ -94,16 +94,6 @@ export const getTopicsAdmin = async (req, res) => {
   }
 };
 
-// GET ALL TOPICS (PUBLIC)
-// export const getTopics = async (req, res) => {
-//   try {
-//     const topics = await Topic.find().sort({ order: 1 });
-//     res.json(topics);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 // UPDATE TOPIC (ADMIN)
 export const updateTopic = async (req, res) => {
   try {

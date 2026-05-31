@@ -60,19 +60,22 @@ const PremiumRequests = () => {
     switch (status) {
       case "approved":
         return {
-          color: "bg-green-50 dark:bg-green-900/30 text-[#2E8B57] dark:text-green-400 border-green-200 dark:border-green-800",
+          color:
+            "bg-green-50 dark:bg-green-900/30 text-[#2E8B57] dark:text-green-400 border-green-200 dark:border-green-800",
           icon: <FiCheckCircle className="w-3.5 h-3.5" />,
           text: "Approved",
         };
       case "rejected":
         return {
-          color: "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800",
+          color:
+            "bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800",
           icon: <FiXCircle className="w-3.5 h-3.5" />,
           text: "Rejected",
         };
       default:
         return {
-          color: "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
+          color:
+            "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
           icon: <FiClock className="w-3.5 h-3.5" />,
           text: "Pending",
         };
@@ -85,10 +88,12 @@ const PremiumRequests = () => {
     if (!search.trim()) return true;
     const query = search.toLowerCase();
     const name = (r.name || r.userId?.name || "").toLowerCase();
-    const email = (r.email || r.userId?.email || "").toLowerCase();
+    const whatsapp = (r.whatsapp || r.userId?.whatsapp || "").toLowerCase();
     const message = (r.message || "").toLowerCase();
     return (
-      name.includes(query) || email.includes(query) || message.includes(query)
+      name.includes(query) ||
+      whatsapp.includes(query) ||
+      message.includes(query)
     );
   });
 
@@ -199,7 +204,7 @@ const PremiumRequests = () => {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, email or message..."
+              placeholder="Search by name, whatsapp or message..."
               className="w-full pl-9 pr-3 py-2 text-sm rounded-xl border border-[#E2E8E3] dark:border-[var(--border)] bg-white dark:bg-[var(--card)] focus:border-[#8FAF9A] dark:focus:border-[var(--accent)] focus:ring-1 focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] outline-none transition-all text-[#2C2C2C] dark:text-[var(--text)] placeholder:text-[#5F6B63] dark:placeholder:text-[var(--muted)]"
             />
           </div>
@@ -260,7 +265,7 @@ const PremiumRequests = () => {
                           </h3>
                           <div className="flex items-center gap-2 text-sm text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
                             <FiMail className="w-3.5 h-3.5" />
-                            <span>{req.email || req.userId?.email}</span>
+                            <span>{req.whatsapp || req.userId?.whatsapp}</span>
                           </div>
                         </div>
                       </div>

@@ -757,7 +757,7 @@ const Content = () => {
               {/* Desktop Table View */}
               <div className="hidden lg:block bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] shadow-sm overflow-hidden">
                 <table className="w-full text-sm text-left">
-                  <thead className="text-xs uppercase bg-gray-50 text-[#5F6B63]">
+                  <thead className="text-xs uppercase bg-gray-50 text-[#5F6B63] dark:bg-[#3b3b3b]">
                     <tr>
                       <th className="px-4 py-3">Title</th>
                       <th className="px-4 py-3">Lessons</th>
@@ -770,7 +770,7 @@ const Content = () => {
                     {topics.map((topic) => (
                       <tr
                         key={topic._id}
-                        className="border-t border-[#E2E8E3] hover:bg-gray-50 transition"
+                        className="border-t border-[#E2E8E3] hover:bg-gray-50 hover:dark:bg-[#30302f] transition"
                       >
                         <td className="px-4 py-3 font-medium text-[#2C2C2C]">
                           {topic.title?.length >= 35

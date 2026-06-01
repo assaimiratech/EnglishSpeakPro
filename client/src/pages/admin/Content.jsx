@@ -72,6 +72,7 @@ const Content = () => {
   const [uploadingIndex, setUploadingIndex] = useState(null);
   const [originalLessonIds, setOriginalLessonIds] = useState([]);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [lessonDeleteConfirm, setLessonDeleteConfirm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [editingLessonIndex, setEditingLessonIndex] = useState(null);
   const [editingLessonId, setEditingLessonId] = useState(null);
@@ -301,6 +302,13 @@ const Content = () => {
     setLessons(updated.length ? updated : [{ ...emptyLesson }]);
   };
 
+  const confirmDeleteLesson = async () => {
+    if (!lessonDeleteConfirm) return;
+    const { index } = lessonDeleteConfirm;
+    await handleDeleteLesson(index);
+    setLessonDeleteConfirm(null);
+  };
+
   const saveTopicWithLessons = async () => {
     if (!topicForm.title?.trim()) {
       showToast("Please enter a topic title", "warning");
@@ -435,6 +443,42 @@ const Content = () => {
                 </button>
                 <button
                   onClick={() => setDeleteConfirm(null)}
+                  className="flex-1 border border-[#E2E8E3] text-[#5F6B63] hover:bg-[#F1F4F1] px-4 py-2 rounded-xl font-medium transition-all duration-200"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Question Confirmation Modal */}
+      {lessonDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-[var(--card)] rounded-2xl max-w-md w-full mx-4 overflow-hidden shadow-xl">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 flex items-center justify-center">
+                <FiAlertCircle className="w-8 h-8 text-red-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-[#2C2C2C] dark:text-[var(--text)] mb-2">
+                Confirm Delete Question
+              </h3>
+              <p className="text-sm text-[#5F6B63] dark:text-[var(--muted)] mb-6">
+                Are you sure you want to delete "
+                {lessonDeleteConfirm.questionText}"? This action cannot be
+                undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={confirmDeleteLesson}
+                  disabled={saving}
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200"
+                >
+                  {saving ? "Deleting..." : "Delete"}
+                </button>
+                <button
+                  onClick={() => setLessonDeleteConfirm(null)}
                   className="flex-1 border border-[#E2E8E3] text-[#5F6B63] hover:bg-[#F1F4F1] px-4 py-2 rounded-xl font-medium transition-all duration-200"
                 >
                   Cancel
@@ -693,8 +737,14 @@ const Content = () => {
                     )}
                     <div className="mt-3 flex gap-2">
                       <button
-                        onClick={() => handleDeleteLesson(index)}
-                        className="text-red-500 text-sm px-3 py-1 rounded-lg border border-red-100"
+                        onClick={() =>
+                          setLessonDeleteConfirm({
+                            index,
+                            questionText:
+                              lesson.questionText || "this question",
+                          })
+                        }
+                        className="text-white text-sm px-3 py-1 rounded-lg border border-red-100 bg-[#2E8B57]"
                       >
                         Delete Question
                       </button>

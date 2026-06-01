@@ -177,7 +177,6 @@ const Content = () => {
     setSelectedTopic(topic);
     setTopicForm(topic);
     setViewMode("create");
-    // Clear lessons when opening a new topic for adding lessons
     setLessons([{ ...emptyLesson }]);
     setEditingLessonIndex(null);
     setEditingLessonId(null);
@@ -253,8 +252,13 @@ const Content = () => {
       for (const lesson of lessons) {
         if (lesson.questionText?.trim()) {
           await createLesson({
-            ...lesson,
             topicId,
+            questionText: lesson.questionText,
+            answerText: lesson.answerText,
+            order: lesson.order,
+            isPremium: lesson.isPremium,
+            isPublished: lesson.isPublished,
+            audioUrl: lesson.audioUrl,
           });
         }
       }
@@ -394,9 +398,9 @@ const Content = () => {
         <div className="space-y-4 sm:space-y-6">
           {/* Topic Info Card */}
           <div className="bg-white dark:bg-[var(--card)] rounded-xl sm:rounded-2xl border border-[#E2E8E3] dark:border-[var(--border)] shadow-lg overflow-hidden">
-            <div className="px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-[#F7F9F7] to-white border-b border-[#E2E8E3]">
+            <div className="px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-[#F7F9F7] to-white border-b border-[#E2E8E3] dark:bg-gradient-to-r dark:from-[#5b835b] to-white">
               <div className="flex items-center gap-2">
-                <FiFolderPlus className="w-4 h-4 sm:w-5 sm:h-5 text-[#2E8B57]" />
+                <FiFolderPlus className="w-4 h-4 sm:w-5 sm:h-5 text-[#2E8B57] dark:text-[#ffffff]" />
                 <h2 className="font-semibold text-sm sm:text-base text-[#2C2C2C]">
                   {selectedTopic ? "Edit Topic" : "Create New Topic"}
                 </h2>
@@ -491,18 +495,18 @@ const Content = () => {
             {lessons.map((lesson, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-[var(--card)] rounded-xl sm:rounded-2xl border border-[#E2E8E3] shadow-lg mb-4 sm:mb-6 overflow-hidden"
+                className="bg-white dark:bg-[var(--card)] rounded-xl sm:rounded-2xl dark:bg-[#ff5f2e] border border-[#E2E8E3] shadow-lg mb-4 sm:mb-6 overflow-hidden"
               >
-                <div className="px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-[#F7F9F7] to-white border-b border-[#E2E8E3] flex justify-between items-center">
+                <div className="px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-[#F7F9F7] to-white dark:bg-gradient-to-r dark:from-[#5b835b] to-white border-b border-[#E2E8E3] flex justify-between items-center">
                   <h3 className="font-semibold text-sm sm:text-base text-[#2C2C2C]">
                     Question #{index + 1}
                   </h3>
-                  <button
+                  {/* <button
                     onClick={() => removeLessonField(index)}
                     className="p-1 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
                   >
                     <FiTrash2 className="w-4 h-4" />
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="p-4 sm:p-5">

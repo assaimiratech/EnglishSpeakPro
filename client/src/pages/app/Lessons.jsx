@@ -42,6 +42,9 @@ const Lessons = () => {
   // NEW: Global display answers toggle state
   const [globalShowAnswers, setGlobalShowAnswers] = useState(false);
 
+  const [hiddenByUser, setHiddenByUser] = useState(false);
+
+  const shouldShowAnswer = globalShowAnswers ? !hiddenByUser : showAnswer;
   const lesson = lessons[index] || null;
   const progress = lessons.length ? ((index + 1) / lessons.length) * 100 : 0;
 
@@ -173,8 +176,14 @@ const Lessons = () => {
             </p>
 
             <AnswerToggle
-              show={globalShowAnswers || showAnswer}
-              onToggle={() => setShowAnswer(!showAnswer)}
+              show={shouldShowAnswer}
+              onToggle={() => {
+                if (globalShowAnswers) {
+                  setHiddenByUser(!hiddenByUser);
+                } else {
+                  setShowAnswer(!showAnswer);
+                }
+              }}
               answer={lesson.answer}
             />
           </div>

@@ -437,9 +437,9 @@ const Lessons = () => {
         {/* Create/Edit Form */}
         {isFormVisible && (
           <div className="bg-white dark:bg-[var(--card)] rounded-2xl border border-[#E2E8E3] shadow-lg mb-6 overflow-hidden">
-            <div className="px-4 sm:px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white border-b border-[#E2E8E3] flex justify-between items-center">
+            <div className="px-4 sm:px-5 py-4 bg-gradient-to-r from-[#F7F9F7] to-white border-b border-[#E2E8E3] dark:bg-gradient-to-r dark:from-[#5b835b] to-white flex justify-between items-center">
               <h2 className="font-semibold text-[#2C2C2C]">
-                {editId ? "Edit Lesson" : "Create New Lesson"}
+                {editId ? "Edit Question" : "Create New Question"}
               </h2>
               <button
                 onClick={() => {

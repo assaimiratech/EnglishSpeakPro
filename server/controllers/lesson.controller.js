@@ -4,8 +4,15 @@ import Topic from "../models/Topic.js";
 // CREATE LESSON (ADMIN)
 export const createLesson = async (req, res) => {
   try {
-    const { topicId, questionText, audioUrl, answerText, order, isPremium } =
-      req.body;
+    const {
+      topicId,
+      questionText,
+      audioUrl,
+      answerText,
+      order,
+      isPremium,
+      isPublished,
+    } = req.body;
 
     const lesson = await Lesson.create({
       topicId,
@@ -14,6 +21,7 @@ export const createLesson = async (req, res) => {
       answerText,
       order,
       isPremium,
+      isPublished,
     });
 
     res.status(201).json(lesson);

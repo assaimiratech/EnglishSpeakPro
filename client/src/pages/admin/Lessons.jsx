@@ -29,7 +29,6 @@ import {
 } from "../../api/admin.lessons.api";
 import { getTopicsAdmin } from "../../api/admin.topics.api";
 import { useLocation, useSearchParams } from "react-router-dom";
-const apiUrl = import.meta.env.VITE_API_URL;
 
 const Lessons = () => {
   const [lessons, setLessons] = useState([]);
@@ -102,8 +101,9 @@ const Lessons = () => {
       setUploadLoading(true);
       const token = localStorage.getItem("token");
       const res = await uploadAudio(audioFile, token);
-      const audioUrl = `${apiUrl}${res.fileUrl}`;
-      setAudioPreview(audioUrl);
+      setAudioPreview(
+        `https://englishspeakpro-e7ve.onrender.com${res.fileUrl}`,
+      );
       setForm((prev) => ({
         ...prev,
         audioUrl: res.fileUrl,
@@ -387,7 +387,7 @@ const Lessons = () => {
                     <div className="bg-[#F7F9F7] rounded-xl p-4 border border-[#E2E8E3]">
                       <audio
                         controls
-                        src={`${apiUrl}/${modalLesson.audioUrl}`}
+                        src={`https://englishspeakpro-e7ve.onrender.com/${modalLesson.audioUrl}`}
                         className="w-full rounded-lg"
                       />
                     </div>
@@ -567,7 +567,7 @@ const Lessons = () => {
                   <div className="mt-3">
                     <audio
                       controls
-                      src={`${apiUrl}${form.audioUrl}`}
+                      src={`https://englishspeakpro-e7ve.onrender.com${form.audioUrl}`}
                       className="w-full max-w-full rounded-lg"
                     />
                   </div>
@@ -684,7 +684,7 @@ const Lessons = () => {
                       {lesson.audioUrl && (
                         <audio
                           controls
-                          src={`${apiUrl}${lesson.audioUrl}`}
+                          src={`https://englishspeakpro-e7ve.onrender.com${lesson.audioUrl}`}
                           className="w-full max-w-md rounded-lg mt-3"
                           preload="metadata"
                         />

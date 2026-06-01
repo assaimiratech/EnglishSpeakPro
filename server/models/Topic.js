@@ -31,4 +31,8 @@ const topicSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// indexes to speed up lookups and sorting
+topicSchema.index({ title: 1 });
+topicSchema.index({ isPublished: 1 });
+topicSchema.index({ order: 1 });
 export default mongoose.model("Topic", topicSchema);

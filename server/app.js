@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import compression from "compression";
 
 // routes
 import authRoutes from "./routes/auth.routes.js";
@@ -17,6 +18,8 @@ const app = express();
 
 // middleware
 app.use(cors());
+// enable gzip compression for responses (improves bandwidth and speed)
+app.use(compression());
 app.use(express.json());
 app.use("/uploads", express.static("uploads")); // Serve uploaded files at /uploads
 

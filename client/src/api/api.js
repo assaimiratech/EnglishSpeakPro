@@ -1,9 +1,8 @@
 import axios from "axios";
 import { getToken } from "../utils/token";
-const apiUrl = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  baseURL: `${apiUrl}/api`,
+  baseURL: `https://englishspeakpro-e7ve.onrender.com/api`,
   timeout: 120000,
 });
 

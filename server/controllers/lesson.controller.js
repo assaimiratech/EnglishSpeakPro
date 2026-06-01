@@ -41,6 +41,10 @@ export const getPublishedLessons = async (req, res) => {
     if (topicId) filter.topicId = topicId;
 
     const lessons = await Lesson.find(filter)
+      .select(
+        "questionText answerText order audioUrl topicId isPublished isPremium createdAt",
+      )
+      .lean()
       .populate("topicId", "title")
       .sort({ order: 1, createdAt: 1 });
 
@@ -56,7 +60,10 @@ export const getLessonsByTopic = async (req, res) => {
     const lessons = await Lesson.find({
       topicId: req.params.topicId,
       isPublished: true,
-    }).sort({ order: 1, createdAt: 1 });
+    })
+      .select("questionText answerText order audioUrl createdAt")
+      .lean()
+      .sort({ order: 1, createdAt: 1 });
 
     res.json(lessons);
   } catch (error) {
@@ -102,6 +109,10 @@ export const getAllLessons = async (req, res) => {
     }
 
     const lessons = await Lesson.find(filter)
+      .select(
+        "questionText answerText order audioUrl topicId isPublished isPremium createdAt",
+      )
+      .lean()
       .populate("topicId", "title")
       .skip(skip)
       .limit(limit)

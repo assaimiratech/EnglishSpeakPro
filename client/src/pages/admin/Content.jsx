@@ -51,7 +51,6 @@ const emptyLesson = {
   isPublished: false,
   audioUrl: "",
 };
-const apiUrl = import.meta.env.VITE_API_URL;
 
 const Content = () => {
   const [topics, setTopics] = useState([]);
@@ -71,6 +70,7 @@ const Content = () => {
   const [audioPreview, setAudioPreview] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadingIndex, setUploadingIndex] = useState(null);
+  const [originalLessonIds, setOriginalLessonIds] = useState([]);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [saving, setSaving] = useState(false);
   const [editingLessonIndex, setEditingLessonIndex] = useState(null);
@@ -156,30 +156,65 @@ const Content = () => {
     setIsFormVisible(false);
   };
 
-  const handleTogglePublish = async (topic) => {
+  const handleTogglePremium = async (topic) => {
     try {
       await updateTopic(topic._id, {
-        isPublished: !topic.isPublished,
+        isPremium: !topic.isPremium,
       });
       await fetchTopics();
       showToast(
-        topic.isPublished
-          ? "Topic moved to draft"
-          : "Topic published successfully",
+        topic.isPremium
+          ? "Topic moved to Free"
+          : "Topic Make Premium successfully",
         "success",
       );
     } catch (err) {
-      showToast("Failed to update publish status", "error");
+      showToast("Failed to update premium status", "error");
     }
   };
 
   const openTopic = async (topic) => {
     setSelectedTopic(topic);
     setTopicForm(topic);
-    setViewMode("create");
-    setLessons([{ ...emptyLesson }]);
+    setViewMode("edit");
     setEditingLessonIndex(null);
     setEditingLessonId(null);
+
+    // load lessons for this topic
+    try {
+      setLoading(true);
+      const res = await getLessonsAdmin(topic._id);
+      // API returns { lessons, total } for admin route
+      const fetched = res?.lessons || res || [];
+      if (fetched.length === 0) {
+        setLessons([{ ...emptyLesson }]);
+        setOriginalLessonIds([]);
+      } else {
+        // map lessons to client-friendly shape
+        const mapped = fetched.map((l) => ({
+          _id: l._id,
+          questionText: l.questionText || "",
+          answerText: l.answerText || "",
+          order: l.order || 1,
+          isPremium: !!l.isPremium,
+          isPublished: !!l.isPublished,
+          audioUrl: l.audioUrl || "",
+          // transient fields for client-only
+          file: null,
+          audioPreview: l.audioUrl
+            ? `https://englishspeakpro-e7ve.onrender.com${l.audioUrl}`
+            : null,
+        }));
+
+        setLessons(mapped);
+        setOriginalLessonIds(mapped.map((m) => m._id));
+      }
+    } catch (err) {
+      showToast("Failed to load topic lessons", "error");
+      setLessons([{ ...emptyLesson }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const addLessonField = () => {
@@ -202,25 +237,68 @@ const Content = () => {
     setLessons(updated);
   };
 
+  const handleLessonFileChange = (index, file) => {
+    const updated = [...lessons];
+    updated[index].file = file;
+    updated[index].audioPreview = file ? URL.createObjectURL(file) : null;
+    setLessons(updated);
+  };
+
   const handleUploadAudio = async (index) => {
-    if (!audioFile) return;
+    const lesson = lessons[index];
+    const file = lesson?.file;
+    if (!file) {
+      showToast("Please choose an audio file first", "warning");
+      return;
+    }
 
     try {
       setUploadingIndex(index);
       setUploadLoading(true);
-      const token = localStorage.getItem("token");
-      const res = await uploadAudio(audioFile, token);
-
+      const res = await uploadAudio(file);
+      // res.fileUrl is relative path
       updateLessonField(index, "audioUrl", res.fileUrl);
-      setAudioPreview(URL.createObjectURL(audioFile));
+      // set preview to the uploaded URL
+      updateLessonField(
+        index,
+        "audioPreview",
+        `https://englishspeakpro-e7ve.onrender.com${res.fileUrl}`,
+      );
       showToast("Audio uploaded successfully!", "success");
-      setAudioFile(null);
+      // clear transient file
+      const updated = [...lessons];
+      updated[index].file = null;
+      setLessons(updated);
     } catch (err) {
+      console.error(err);
       showToast("Upload failed", "error");
     } finally {
       setUploadLoading(false);
       setUploadingIndex(null);
     }
+  };
+
+  const handleDeleteLesson = async (index) => {
+    const lesson = lessons[index];
+    if (!lesson) return;
+
+    // if lesson exists on server, delete it
+    if (lesson._id) {
+      try {
+        setSaving(true);
+        await deleteLesson(lesson._id);
+        showToast("Question deleted", "success");
+      } catch (err) {
+        showToast("Failed to delete question", "error");
+      } finally {
+        setSaving(false);
+      }
+    }
+
+    // remove from UI
+    const updated = [...lessons];
+    updated.splice(index, 1);
+    setLessons(updated.length ? updated : [{ ...emptyLesson }]);
   };
 
   const saveTopicWithLessons = async () => {
@@ -240,26 +318,37 @@ const Content = () => {
 
       const topicId = topicRes._id;
 
-      // // Delete existing lessons if editing
-      // if (selectedTopic?._id) {
-      //   const existingLessons = await getLessonsAdmin({ topicId });
-      //   for (const lesson of existingLessons.lessons || []) {
-      //     await deleteLesson(lesson._id);
-      //   }
-      // }
+      // detect deleted lessons (that existed originally but were removed)
+      const currentIds = lessons.filter((l) => l._id).map((l) => l._id);
+      const removed = originalLessonIds.filter(
+        (id) => !currentIds.includes(id),
+      );
+      for (const id of removed) {
+        try {
+          await deleteLesson(id);
+        } catch (err) {
+          console.warn("Failed to delete lesson", id, err);
+        }
+      }
 
-      // Create new lessons
+      // Upsert lessons
       for (const lesson of lessons) {
-        if (lesson.questionText?.trim()) {
-          await createLesson({
-            topicId,
-            questionText: lesson.questionText,
-            answerText: lesson.answerText,
-            order: lesson.order,
-            isPremium: lesson.isPremium,
-            isPublished: lesson.isPublished,
-            audioUrl: lesson.audioUrl,
-          });
+        if (!lesson.questionText?.trim()) continue;
+
+        const payload = {
+          topicId,
+          questionText: lesson.questionText,
+          answerText: lesson.answerText,
+          order: lesson.order,
+          isPremium: topicForm.isPremium,
+          isPublished: topicForm.isPublished,
+          audioUrl: lesson.audioUrl,
+        };
+
+        if (lesson._id) {
+          await updateLesson(lesson._id, payload);
+        } else {
+          await createLesson(payload);
         }
       }
 
@@ -268,6 +357,7 @@ const Content = () => {
       setLessons([]);
       setSelectedTopic(null);
       setTopicForm(emptyTopic);
+      setOriginalLessonIds([]);
       showToast("Topic and lessons saved successfully!", "success");
     } catch (err) {
       showToast(err.message || "Failed to save", "error");
@@ -469,13 +559,6 @@ const Content = () => {
                     Add lessons/questions to this topic
                   </p>
                 </div>
-                <button
-                  onClick={addLessonField}
-                  className="inline-flex items-center justify-center gap-2 bg-[#2E8B57] hover:bg-[#257149] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-medium transition-all duration-200 text-sm w-full sm:w-auto"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  Add Question
-                </button>
               </div>
             </div>
 
@@ -501,12 +584,12 @@ const Content = () => {
                   <h3 className="font-semibold text-sm sm:text-base text-[#2C2C2C]">
                     Question #{index + 1}
                   </h3>
-                  {/* <button
+                  <button
                     onClick={() => removeLessonField(index)}
                     className="p-1 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
                   >
-                    <FiTrash2 className="w-4 h-4" />
-                  </button> */}
+                    <FiX className="w-4 h-4" />
+                  </button>
                 </div>
 
                 <div className="p-4 sm:p-5">
@@ -563,42 +646,6 @@ const Content = () => {
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4 mt-4">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={lesson.isPremium}
-                        onChange={(e) =>
-                          updateLessonField(
-                            index,
-                            "isPremium",
-                            e.target.checked,
-                          )
-                        }
-                        className="w-4 h-4 rounded border-[#E2E8E3] text-[#2E8B57] focus:ring-[#8FAF9A]"
-                      />
-                      <span className="text-sm text-[#2C2C2C]">
-                        Premium Question
-                      </span>
-                    </label>
-
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={lesson.isPublished}
-                        onChange={(e) =>
-                          updateLessonField(
-                            index,
-                            "isPublished",
-                            e.target.checked,
-                          )
-                        }
-                        className="w-4 h-4 rounded border-[#E2E8E3] text-[#2E8B57] focus:ring-[#8FAF9A]"
-                      />
-                      <span className="text-sm text-[#2C2C2C]">Published</span>
-                    </label>
-                  </div>
-
                   <div className="mt-4 pt-4 border-t border-[#E2E8E3]">
                     <label className="block text-xs sm:text-sm font-medium text-[#2C2C2C] mb-2">
                       Audio File
@@ -608,13 +655,15 @@ const Content = () => {
                         <input
                           type="file"
                           accept="audio/*"
-                          onChange={(e) => setAudioFile(e.target.files[0])}
+                          onChange={(e) =>
+                            handleLessonFileChange(index, e.target.files[0])
+                          }
                           className="w-full text-xs sm:text-sm text-[#5F6B63] file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs sm:file:text-sm file:font-medium file:bg-[#8FAF9A]/10 file:text-[#2E8B57] hover:file:bg-[#8FAF9A]/20 transition-colors"
                         />
                       </div>
                       <button
                         onClick={() => handleUploadAudio(index)}
-                        disabled={uploadLoading || !audioFile}
+                        disabled={uploadLoading || !lessons[index]?.file}
                         className="inline-flex items-center justify-center gap-2 bg-[#8FAF9A] hover:bg-[#7a9e86] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-medium transition-all disabled:opacity-50 text-xs sm:text-sm"
                       >
                         {uploadLoading && uploadingIndex === index ? (
@@ -627,23 +676,42 @@ const Content = () => {
                           : "Upload Audio"}
                       </button>
                     </div>
-                    {lesson.audioUrl && (
+                    {(lesson.audioPreview || lesson.audioUrl) && (
                       <div className="mt-3">
                         <audio
                           controls
-                          src={`${apiUrl}${lesson.audioUrl}`}
+                          src={
+                            lesson.audioPreview ||
+                            `https://englishspeakpro-e7ve.onrender.com${lesson.audioUrl}`
+                          }
                           className="w-full max-w-full sm:max-w-md rounded-lg"
                         />
                         <p className="text-[10px] text-green-600 mt-1">
-                          ✓ Audio uploaded
+                          ✓ Audio available
                         </p>
                       </div>
                     )}
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        onClick={() => handleDeleteLesson(index)}
+                        className="text-red-500 text-sm px-3 py-1 rounded-lg border border-red-100"
+                      >
+                        Delete Question
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
-
+            <div className="flex justify-end">
+              <button
+                onClick={addLessonField}
+                className=" left-1 inline-flex items-center justify-center gap-2 bg-[#2E8B57] hover:bg-[#257149] text-white px-3 mt-2 sm:px-4 py-1.5 sm:py-2 rounded-xl font-medium transition-all duration-200 text-sm w-full sm:w-auto"
+              >
+                <FiPlus className="w-4 h-4" />
+                Add Question
+              </button>
+            </div>
             {/* Save All Button */}
             <div className="flex flex-wrap gap-3 mt-6 pt-4 border-t border-[#E2E8E3]">
               <button
@@ -715,32 +783,21 @@ const Content = () => {
                     </p>
                     <div className="flex flex-wrap gap-2 pt-2 border-t border-[#E2E8E3]">
                       <button
-                        onClick={() =>
-                          navigate(`/admin/lessons?topic=${topic._id}`, {
-                            state: { topicTitle: topic.title },
-                          })
-                        }
-                        className="flex-1 flex items-center justify-center gap-1 bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-sm font-medium"
-                      >
-                        <FiEye className="w-3.5 h-3.5" /> View Lessons
-                      </button>
-                      <button
                         onClick={() => openTopic(topic)}
-                        // onClick={() => handleEditTopic(topic)}
                         className="flex-1 flex items-center justify-center gap-1 bg-yellow-50 text-yellow-600 px-3 py-1.5 rounded-lg text-sm font-medium"
                       >
                         <FiEdit2 className="w-3.5 h-3.5" /> Edit
                       </button>
                       <button
-                        onClick={() => handleTogglePublish(topic)}
+                        onClick={() => handleTogglePremium(topic)}
                         className="flex-1 flex items-center justify-center gap-1 bg-green-50 text-green-600 px-3 py-1.5 rounded-lg text-sm font-medium"
                       >
-                        {topic.isPublished ? (
+                        {topic.isPremium ? (
                           <FiUnlock className="w-4 h-4" />
                         ) : (
                           <FiLock className="w-4 h-4" />
                         )}
-                        {topic.isPublished ? "Draft" : "Publish"}
+                        {topic.isPremium ? "Free" : "Premium"}
                       </button>
                       <button
                         onClick={() =>
@@ -805,18 +862,6 @@ const Content = () => {
                         <td className="px-4 py-3">
                           <div className="flex justify-end gap-2">
                             <button
-                              onClick={() =>
-                                navigate(`/admin/lessons?topic=${topic._id}`, {
-                                  state: { topicTitle: topic.title },
-                                })
-                              }
-                              // onClick={() => handleEditTopic(topic)}
-                              className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
-                              title="Add Lessons"
-                            >
-                              <FiEye className="w-4 h-4" />
-                            </button>
-                            <button
                               onClick={() => openTopic(topic)}
                               className="p-2 rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
                               title="Edit"
@@ -824,13 +869,11 @@ const Content = () => {
                               <FiEdit2 className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => handleTogglePublish(topic)}
-                              className={`p-2 rounded-lg ${topic.isPublished ? "bg-orange-50 text-orange-600 hover:bg-orange-100" : "bg-green-50 text-green-600 hover:bg-green-100"}`}
-                              title={
-                                topic.isPublished ? "Unpublish" : "Publish"
-                              }
+                              onClick={() => handleTogglePremium(topic)}
+                              className={`p-2 rounded-lg ${topic.isPremium ? "bg-orange-50 text-orange-600 hover:bg-orange-100" : "bg-green-50 text-green-600 hover:bg-green-100"}`}
+                              title={topic.isPremium ? "Free" : "Premium"}
                             >
-                              {topic.isPublished ? (
+                              {topic.isPremium ? (
                                 <FiLock className="w-4 h-4" />
                               ) : (
                                 <FiUnlock className="w-4 h-4" />

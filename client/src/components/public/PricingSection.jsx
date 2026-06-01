@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+// framer-motion removed to reduce startup bundle and improve load
 
 import {
   FiStar,
@@ -23,43 +23,104 @@ const PricingSection = () => {
   const [settings, setSettings] = useState(null);
   const [open, setOpen] = useState(false);
   const [hoveredPlan, setHoveredPlan] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadSettings();
   }, []);
 
   const loadSettings = async () => {
+    let cacheUsed = false;
+
     try {
+      const cache = sessionStorage.getItem("settings_cache");
+      if (cache) {
+        const parsed = JSON.parse(cache);
+        const age = Date.now() - parsed._ts;
+        if (age < 1000 * 60 * 5) {
+          setSettings(parsed.data);
+          cacheUsed = true;
+        }
+      }
+
       const data = await getSettings();
       setSettings(data);
+      try {
+        sessionStorage.setItem(
+          "settings_cache",
+          JSON.stringify({ _ts: Date.now(), data }),
+        );
+      } catch (e) {
+        // ignore storage errors
+      }
     } catch (err) {
-      console.log("Settings load failed");
+      console.log("Settings load failed", err?.message || err);
+    } finally {
+      setLoading(false);
+      if (cacheUsed) {
+        // keep the initial cached UI while the API fetch resolves
+        setLoading(false);
+      }
     }
   };
 
-  if (!settings) return null;
+  // while settings load, show a lightweight skeleton to improve perceived performance
+  if (loading || !settings) {
+    return (
+      <section className="py-12 bg-gradient-to-b from-[#F7F9F7] to-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <div className="w-12 h-12 rounded-full bg-gray-100 animate-pulse mx-auto mb-4"></div>
+            <div className="h-8 bg-gray-200 rounded mx-auto w-3/5 animate-pulse mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded mx-auto w-2/3 animate-pulse"></div>
+          </div>
 
-  const price = settings.coursePrice || 0;
-  const currency = settings.currency || "LKR";
-
-  const discountEnabled = settings.discount?.enabled;
-  const discountType = settings.discount?.type;
-  const discountValue = settings.discount?.value;
-
-  let finalPrice = price;
-  let discountText = null;
-  let discountPercentage = null;
-
-  if (discountEnabled) {
-    if (discountType === "percentage") {
-      finalPrice = price - (price * discountValue) / 100;
-      discountText = `${discountValue}% OFF`;
-      discountPercentage = discountValue;
-    } else {
-      finalPrice = price - discountValue;
-      discountText = `${currency} ${discountValue} OFF`;
-    }
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <div className="h-64 bg-white rounded-2xl shadow-sm animate-pulse" />
+            <div className="h-64 bg-white rounded-2xl shadow-sm animate-pulse" />
+          </div>
+        </div>
+      </section>
+    );
   }
+
+  const {
+    coursePrice: price = 0,
+    currency = "LKR",
+    discount = {},
+    discountEnabled: rawDiscountEnabled,
+    discountType: rawDiscountType,
+    discountValue: rawDiscountValue,
+  } = settings || {};
+
+  const {
+    enabled: discountEnabled,
+    type: discountType,
+    value: discountValue,
+  } = discount || {
+    enabled: rawDiscountEnabled,
+    type: rawDiscountType,
+    value: rawDiscountValue,
+  };
+
+  const normalizedDiscountEnabled = Boolean(discountEnabled);
+  const normalizedDiscountType = discountType || "percentage";
+  const normalizedDiscountValue = Number(discountValue || 0);
+
+  const { finalPrice, discountText } = (function computePricing() {
+    let f = price;
+    let text = null;
+    if (normalizedDiscountEnabled && normalizedDiscountValue > 0) {
+      if (normalizedDiscountType === "percentage") {
+        f = price - (price * normalizedDiscountValue) / 100;
+        text = `${normalizedDiscountValue}% OFF`;
+      } else {
+        f = price - normalizedDiscountValue;
+        text = `${currency} ${normalizedDiscountValue} OFF`;
+      }
+    }
+    return { finalPrice: f, discountText: text };
+  })();
 
   const freeFeatures = [
     { text: "Limited conversation topics", icon: <FiCheckCircle /> },
@@ -67,7 +128,13 @@ const PricingSection = () => {
 
   const premiumFeatures = ["Unlimited conversation topics"];
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = (function getUser() {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch (e) {
+      return null;
+    }
+  })();
 
   const handlePremiumClick = () => {
     if (!user) {
@@ -112,10 +179,7 @@ const PricingSection = () => {
           {/* Pricing Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             {/* FREE PLAN */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
+            <div
               onMouseEnter={() => setHoveredPlan("free")}
               onMouseLeave={() => setHoveredPlan(null)}
               className="flex"
@@ -174,13 +238,10 @@ const PricingSection = () => {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* PREMIUM PLAN */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
+            <div
               onMouseEnter={() => setHoveredPlan("premium")}
               onMouseLeave={() => setHoveredPlan(null)}
               className="flex"
@@ -196,7 +257,7 @@ const PricingSection = () => {
               `}
               >
                 {/* Discount */}
-                {discountEnabled && (
+                {discountEnabled && discountText && (
                   <div className="absolute top-4 right-4 z-10">
                     <div className="bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
                       🔥 {discountText}
@@ -224,20 +285,20 @@ const PricingSection = () => {
                   <div className="min-h-[130px] mt-6">
                     <div className="text-5xl md:text-6xl font-bold text-[#ffffff] dark:text-[var(--text)] mt-2">
                       {finalPrice.toLocaleString()}
-                      <span className="text-sm font-normal text-[#ffffff] dark:text-[var(--muted)] ml-1">
+                      <span className="text-sm font-normal text-[#ffffff] ml-1">
                         LKR /Month
                       </span>
                     </div>
 
                     {/* Savings */}
-                    {discountEnabled && discountPercentage && (
+                    {/* {discountEnabled && (
                       <div className="mt-3 inline-flex items-center gap-1 bg-green-50/20 dark:bg-green-900/20 text-white text-xs font-medium px-3 py-1 rounded-full">
                         <FiTrendingUp className="w-3 h-3" />
                         <span className="text-sm line-through text-[#ffffff] dark:text-[#da1a1a] opacity-80">
                           {currency} {price.toLocaleString()}
                         </span>
                       </div>
-                    )}
+                    )} */}
                   </div>
 
                   {/* Features - Fixed height container */}
@@ -248,8 +309,8 @@ const PricingSection = () => {
                           key={index}
                           className="flex items-center gap-3 h-8"
                         >
-                          <FiCheckCircle className="w-4 h-4 text-[#ffffff] dark:text-[var(--accent)] flex-shrink-0 w-5" />
-                          <span className="text-sm text-[#ffffff] dark:text-[var(--muted)]">
+                          <FiCheckCircle className="w-4 h-4 text-[#ffffff]  flex-shrink-0 w-5" />
+                          <span className="text-sm text-[#ffffff]">
                             {feature}
                           </span>
                         </div>
@@ -283,7 +344,7 @@ const PricingSection = () => {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -294,4 +355,4 @@ const PricingSection = () => {
   );
 };
 
-export default PricingSection;
+export default memo(PricingSection);

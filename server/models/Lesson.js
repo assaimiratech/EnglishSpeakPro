@@ -41,4 +41,9 @@ const lessonSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// indexes to speed up common queries
+lessonSchema.index({ topicId: 1 });
+lessonSchema.index({ order: 1 });
+lessonSchema.index({ isPublished: 1 });
+
 export default mongoose.model("Lesson", lessonSchema);

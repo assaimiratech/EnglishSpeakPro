@@ -11,7 +11,9 @@ const ProtectedRoute = ({ children }) => {
 
   try {
     const decoded = jwtDecode(token);
-
+    if (decoded.role !== "admin") {
+      return <Navigate to="/topics" replace />;
+    }
     // expired check
     if (decoded.isActive) {
       return <Navigate to="/topics" replace />;

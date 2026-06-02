@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import express from "express";
 import cors from "cors";
 import compression from "compression";
@@ -21,7 +23,13 @@ app.use(cors());
 // enable gzip compression for responses (improves bandwidth and speed)
 app.use(compression());
 app.use(express.json());
-app.use("/uploads", express.static("uploads")); // Serve uploaded files at /uploads
+
+// ensure uploads folder exists before serving or writing files
+const uploadsDir = path.resolve(process.cwd(), "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use("/uploads", express.static(uploadsDir)); // Serve uploaded files at /uploads
 
 // health check (important for deployment)
 app.get("/health", (req, res) => {

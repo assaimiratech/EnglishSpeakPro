@@ -43,17 +43,21 @@ const AppRoutes = () => {
       <Route
         path="/lessons/:topicId"
         element={
-          <AppLayout>
-            <Lessons />
-          </AppLayout>
+          <ProtectedRoute>
+            <AppLayout>
+              <Lessons />
+            </AppLayout>
+          </ProtectedRoute>
         }
       />
       <Route
         path="/settings"
         element={
-          <AppLayout>
-            <Settings />
-          </AppLayout>
+          <ProtectedRoute>
+            <AppLayout>
+              <Settings />
+            </AppLayout>
+          </ProtectedRoute>
         }
       />
 

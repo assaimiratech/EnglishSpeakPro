@@ -42,6 +42,7 @@ api.interceptors.response.use(
     const status = error.response?.status;
 
     if (status === 401 || status === 403) {
+      localStorage.removeItem("es_token");
       localStorage.removeItem("token");
 
       // optional: force logout

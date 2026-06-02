@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import AdminLayout from "../components/layout/AdminLayout";
-import AdminRoute from "../components/common/AdminRoute";
+import AdminRoute from "./AdminRoute";
 
 import Users from "../pages/admin/Users";
 import Lessons from "../pages/admin/Lessons";
@@ -12,16 +12,57 @@ import Dashboard from "../pages/admin/Dashboard";
 const AdminRoutes = () => {
   return (
     <Routes>
-      <Route element={<AdminRoute />}>
-        <Route element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="users" element={<Users />} />
-          <Route path="content" element={<Content />} />
-          <Route path="lessons" element={<Lessons />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="premium" element={<PremiumRequests />} />
-        </Route>
-      </Route>
+      <Route
+        path="/"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <Dashboard />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="users"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <Users />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="content"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <Content />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="settings"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <Settings />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
+
+      <Route
+        path="premium"
+        element={
+          <AdminRoute>
+            <AdminLayout>
+              <PremiumRequests />
+            </AdminLayout>
+          </AdminRoute>
+        }
+      />
     </Routes>
   );
 };

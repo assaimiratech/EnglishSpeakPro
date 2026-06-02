@@ -66,7 +66,7 @@ export const login = async (req, res) => {
     user.lastLogin = Date.now();
     await user.save();
 
-    const token = generateToken(user._id, user.role);
+    const token = generateToken(user._id, user.role, user.isActive);
 
     res.json({
       token,

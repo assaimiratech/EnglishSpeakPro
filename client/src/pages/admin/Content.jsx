@@ -50,6 +50,7 @@ const emptyLesson = {
   isPremium: false,
   isPublished: false,
   audioUrl: "",
+  audioName: "",
 };
 
 const Content = () => {
@@ -70,6 +71,7 @@ const Content = () => {
   const [audioPreview, setAudioPreview] = useState(null);
   const [uploadLoading, setUploadLoading] = useState(false);
   const [uploadingIndex, setUploadingIndex] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [originalLessonIds, setOriginalLessonIds] = useState([]);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [lessonDeleteConfirm, setLessonDeleteConfirm] = useState(null);
@@ -192,14 +194,17 @@ const Content = () => {
         setOriginalLessonIds([]);
       } else {
         // map lessons to client-friendly shape
-        const mapped = fetched.map((l) => ({
+        const mapped = fetched.map((l, idx) => ({
           _id: l._id,
           questionText: l.questionText || "",
           answerText: l.answerText || "",
-          order: l.order || 1,
+          order: l.order || idx + 1,
           isPremium: !!l.isPremium,
           isPublished: !!l.isPublished,
           audioUrl: l.audioUrl || "",
+          audioName: l.audioUrl
+            ? decodeURIComponent(l.audioUrl.split("/").pop())
+            : "",
           // transient fields for client-only
           file: null,
           audioPreview: l.audioUrl
@@ -219,7 +224,10 @@ const Content = () => {
   };
 
   const addLessonField = () => {
-    setLessons([...lessons, { ...emptyLesson }]);
+    setLessons([
+      ...lessons,
+      { ...emptyLesson, order: lessons.length + 1, audioName: "" },
+    ]);
   };
 
   const removeLessonField = (index) => {
@@ -253,29 +261,62 @@ const Content = () => {
       return;
     }
 
+    if (!file.type.startsWith("audio/")) {
+      showToast("Please select a valid audio file", "error");
+      return;
+    }
+
+    const maxSize = 20 * 1024 * 1024; // 20MB
+    if (file.size > maxSize) {
+      showToast("Audio file is too large. Max 20MB allowed.", "error");
+      return;
+    }
+
     try {
       setUploadingIndex(index);
       setUploadLoading(true);
-      const res = await uploadAudio(file);
-      // res.fileUrl is relative path
+      setUploadProgress(0);
+
+      const res = await uploadAudio(file, (progressEvent) => {
+        if (progressEvent.total) {
+          setUploadProgress(
+            Math.min(
+              100,
+              Math.round((progressEvent.loaded * 100) / progressEvent.total),
+            ),
+          );
+        }
+      });
+
+      if (!res?.fileUrl) {
+        throw new Error("Upload failed: no file URL returned");
+      }
+
+      const filename = res.fileUrl
+        ? decodeURIComponent(res.fileUrl.split("/").pop())
+        : file.name || "audio";
+
       updateLessonField(index, "audioUrl", res.fileUrl);
-      // set preview to the uploaded URL
       updateLessonField(
         index,
         "audioPreview",
         `https://englishspeakpro-e7ve.onrender.com${res.fileUrl}`,
       );
+      updateLessonField(index, "audioName", filename);
       showToast("Audio uploaded successfully!", "success");
-      // clear transient file
+
       const updated = [...lessons];
       updated[index].file = null;
       setLessons(updated);
     } catch (err) {
-      console.error(err);
-      showToast("Upload failed", "error");
+      console.error("Audio upload error:", err);
+      const message =
+        err?.response?.data?.message || err?.message || "Upload failed";
+      showToast(message, "error");
     } finally {
       setUploadLoading(false);
       setUploadingIndex(null);
+      setUploadProgress(0);
     }
   };
 
@@ -720,6 +761,16 @@ const Content = () => {
                           : "Upload Audio"}
                       </button>
                     </div>
+                    {uploadLoading &&
+                      uploadingIndex === index &&
+                      uploadProgress > 0 && (
+                        <div className="mt-2 h-2 w-full rounded-full bg-[#E2E8E3] overflow-hidden">
+                          <div
+                            className="h-full bg-[#2E8B57] transition-all"
+                            style={{ width: `${uploadProgress}%` }}
+                          />
+                        </div>
+                      )}
                     {(lesson.audioPreview || lesson.audioUrl) && (
                       <div className="mt-3">
                         <audio
@@ -730,9 +781,24 @@ const Content = () => {
                           }
                           className="w-full max-w-full sm:max-w-md rounded-lg"
                         />
-                        <p className="text-[10px] text-green-600 mt-1">
-                          ✓ Audio available
-                        </p>
+                        <div className="mt-1 flex items-center gap-2 text-[12px] text-green-600">
+                          <span>✓ Audio available</span>
+                          {lesson.audioName && (
+                            <span className="font-medium text-[11px] text-green-700">
+                              {lesson.audioName}
+                            </span>
+                          )}
+                          {lesson.audioUrl && (
+                            <a
+                              href={`https://englishspeakpro-e7ve.onrender.com${lesson.audioUrl}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-xs text-blue-600 underline ml-2"
+                            >
+                              Open
+                            </a>
+                          )}
+                        </div>
                       </div>
                     )}
                     <div className="mt-3 flex gap-2">

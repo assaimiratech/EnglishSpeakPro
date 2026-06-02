@@ -57,7 +57,7 @@ const Login = () => {
 
       const decoded = jwtDecode(data.token);
 
-      if (decoded.isActive === "false") {
+      if (decoded.isActive === false) {
         toast.error("Account is disabled. Contact admin.");
         return;
       }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FiMenu, FiBell, FiUser, FiSearch } from "react-icons/fi";
 import AdminSidebar from "../admin/AdminSidebar";
-import { Outlet } from "react-router-dom";
 import MobileSidebar from "../admin/MobileSidebar";
 
 const AdminLayout = ({ children }) => {
@@ -36,9 +35,7 @@ const AdminLayout = ({ children }) => {
 
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">
-            <Outlet />
-          </div>
+          <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
     </div>

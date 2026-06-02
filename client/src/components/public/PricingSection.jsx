@@ -54,7 +54,7 @@ const PricingSection = () => {
         // ignore storage errors
       }
     } catch (err) {
-      console.log("Settings load failed", err?.message || err);
+      console.log("Settings load failed");
     } finally {
       setLoading(false);
       if (cacheUsed) {

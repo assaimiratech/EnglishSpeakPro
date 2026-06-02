@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getToken } from "../utils/token";
+import { getToken, removeToken } from "../utils/token";
 import { jwtDecode } from "jwt-decode";
 
 const ProtectedRoute = ({ children }) => {
@@ -11,17 +11,16 @@ const ProtectedRoute = ({ children }) => {
 
   try {
     const decoded = jwtDecode(token);
-    if (decoded.role !== "admin") {
-      return <Navigate to="/topics" replace />;
-    }
-    // expired check
-    if (decoded.isActive) {
-      return <Navigate to="/topics" replace />;
+
+    // Block only explicitly inactive users
+    if (decoded.isActive === false || decoded.isActive === "false") {
+      removeToken();
+      return <Navigate to="/login" replace />;
     }
 
     return children;
   } catch (err) {
-    localStorage.removeItem("token");
+    removeToken();
     return <Navigate to="/login" replace />;
   }
 };

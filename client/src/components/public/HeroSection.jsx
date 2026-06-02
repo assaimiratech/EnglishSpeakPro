@@ -100,17 +100,12 @@ const HeroSection = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-[#8FAF9A]/5 to-[#2E8B57]/5 dark:from-[var(--accent)]/5 dark:to-[var(--accent)]/5 rounded-full blur-3xl animate-pulse-slow animation-delay-2000" />
       </div>
 
-      {/* <div className="absolute bottom-24 right-4 sm:bottom-32 sm:right-10 opacity-20 dark:opacity-10 animate-float-delayed hidden md:block">
-        <FiTrendingUp className="w-10 h-10 sm:w-12 sm:h-12 text-[#8FAF9A]" />
-      </div> */}
-
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 text-center">
         {/* Badge */}
         <div
           className={`inline-flex items-center gap-2 bg-white dark:bg-[var(--card)] border border-[#E2E8E3] dark:border-[var(--border)] shadow-sm rounded-full px-4 py-1.5 mb-6 transition-all duration-200 hover:shadow-md ${animated ? "animate-fade-in" : "opacity-0"}`}
         >
           <div className="relative">
-            {/* <FiHeadphones className="w-4 h-4 text-[#2E8B57] dark:text-[var(--accent)]" /> */}
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
           </div>
           <span className="text-xs font-medium text-[#2C2C2C] dark:text-[var(--text)]">
@@ -179,107 +174,7 @@ const HeroSection = () => {
             <FiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 relative z-10" />
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
           </button>
-
-          {/* <Link
-            to="/pricing"
-            className="
-              group
-              inline-flex
-              items-center
-              justify-center
-              gap-2
-              bg-white
-              dark:bg-[var(--card)]
-              border
-              border-[#E2E8E3]
-              dark:border-[var(--border)]
-              text-[#2C2C2C]
-              dark:text-[var(--text)]
-              hover:bg-[#F1F4F1]
-              dark:hover:bg-[var(--surface)]
-              hover:border-[#8FAF9A]
-              dark:hover:border-[var(--accent)]
-              px-8
-              py-3.5
-              rounded-xl
-              font-semibold
-              text-base
-              transition-all
-              duration-200
-              shadow-sm
-              hover:shadow-md
-              focus:outline-none
-              focus:ring-2
-              focus:ring-[#8FAF9A]
-              dark:focus:ring-[var(--accent)]
-              focus:ring-offset-2
-              dark:focus:ring-offset-[var(--bg)]
-            "
-          >
-            <FiPlayCircle className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-            <span>View Pricing</span>
-          </Link> */}
         </div>
-
-        {/* Trust Indicators */}
-        {/* <div
-          className={`flex flex-wrap justify-center gap-6 md:gap-8 mt-10 md:mt-12 pt-4 ${animated ? "animate-fade-in-up animation-delay-300" : "opacity-0"}`}
-        >
-          {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 group cursor-default"
-            >
-              <div className="w-8 h-8 rounded-full bg-[#F1F4F1] dark:bg-[var(--card)] flex items-center justify-center transition-all duration-200 group-hover:scale-110 group-hover:rotate-6">
-                <stat.icon
-                  className={`w-4 h-4 ${stat.color} dark:text-[var(--accent)]`}
-                />
-              </div>
-              <div className="text-left">
-                <p className="text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-                  {stat.label}
-                </p>
-                <p className="text-sm font-semibold text-[#2C2C2C] dark:text-[var(--text)] transition-colors duration-200">
-                  {stat.value}
-                  {stat.subtext && (
-                    <span className="text-xs font-normal text-[#5F6B63] dark:text-[var(--muted)] ml-1">
-                      {stat.subtext}
-                    </span>
-                  )}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div> */}
-
-        {/* Free Trial Badge */}
-        {/* <div
-          className={`mt-8 inline-flex items-center gap-2 bg-[#F1F4F1] dark:bg-[var(--card)] rounded-full px-4 py-1.5 transition-all duration-200 hover:shadow-md group cursor-default ${animated ? "animate-fade-in-up animation-delay-400" : "opacity-0"}`}
-        >
-          <span className="text-sm group-hover:scale-110 transition-transform duration-200 animate-bounce">
-            ✨
-          </span>
-          <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-            Start your 7-day free trial • No credit card required
-          </span>
-          <span className="text-xs text-[#2E8B57] dark:text-[var(--accent)] font-medium">
-            🎯
-          </span>
-        </div> */}
-
-        {/* Scroll Indicator */}
-        {/* <div
-          className={`mt-16 hidden md:block ${animated ? "animate-fade-in animation-delay-500" : "opacity-0"}`}
-        >
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)]">
-              Scroll to explore
-            </span>
-            <div className="w-6 h-10 border-2 border-[#8FAF9A] dark:border-[var(--accent)] rounded-full flex justify-center">
-              <div className="w-1 h-2 bg-[#8FAF9A] dark:bg-[var(--accent)] rounded-full mt-2 animate-scroll" />
-            </div>
-          </div>
-        </div> */}
       </div>
     </section>
   );

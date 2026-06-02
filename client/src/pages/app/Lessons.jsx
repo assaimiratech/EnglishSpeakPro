@@ -11,7 +11,6 @@ import {
 } from "react-icons/fi";
 
 import LessonHeader from "../../components/lesson/LessonHeader";
-import ProgressBar from "../../components/lesson/ProgressBar";
 import StickyPlayer from "../../components/lesson/StickyPlayer";
 import AnswerToggle from "../../components/lesson/AnswerToggle";
 import LessonNavigation from "../../components/lesson/LessonNavigation";

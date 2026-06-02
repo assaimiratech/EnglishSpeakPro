@@ -289,16 +289,6 @@ const PricingSection = () => {
                         LKR /Month
                       </span>
                     </div>
-
-                    {/* Savings */}
-                    {/* {discountEnabled && (
-                      <div className="mt-3 inline-flex items-center gap-1 bg-green-50/20 dark:bg-green-900/20 text-white text-xs font-medium px-3 py-1 rounded-full">
-                        <FiTrendingUp className="w-3 h-3" />
-                        <span className="text-sm line-through text-[#ffffff] dark:text-[#da1a1a] opacity-80">
-                          {currency} {price.toLocaleString()}
-                        </span>
-                      </div>
-                    )} */}
                   </div>
 
                   {/* Features - Fixed height container */}
@@ -315,7 +305,6 @@ const PricingSection = () => {
                           </span>
                         </div>
                       ))}
-                      {/* Additional features to match free plan structure */}
                     </div>
                   </div>
 

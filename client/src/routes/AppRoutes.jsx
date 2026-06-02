@@ -6,8 +6,7 @@ const Login = lazy(() => import("../pages/auth/Login"));
 const Register = lazy(() => import("../pages/auth/Register"));
 const Topics = lazy(() => import("../pages/app/Topics"));
 const Lessons = lazy(() => import("../pages/app/Lessons"));
-const Settings = lazy(() => import("../pages/app/Settings"));
-const Profile = lazy(() => import("../pages/public/Profile"));
+const Profile = lazy(() => import("../pages/app/Profile"));
 const AppLayout = lazy(() => import("../components/layout/AppLayout"));
 const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 
@@ -56,17 +55,6 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Settings />
-              </AppLayout>
-            </ProtectedRoute>
-          }
-        />
-
         {/* fallback */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

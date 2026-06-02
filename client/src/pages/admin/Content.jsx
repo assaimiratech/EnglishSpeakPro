@@ -100,43 +100,6 @@ const Content = () => {
     }
   };
 
-  const handleCreateOrUpdate = async () => {
-    if (!title.trim()) {
-      showToast("Please enter a topic title", "warning");
-      return;
-    }
-
-    setSaving(true);
-    try {
-      if (editId) {
-        await updateTopic(editId, { title, isPremium, isPublished });
-        showToast("Topic updated successfully!", "success");
-      } else {
-        await createTopic({ title, isPremium, isPublished });
-        showToast("Topic created successfully!", "success");
-      }
-
-      setTitle("");
-      setIsPremium(false);
-      setIsPublished(false);
-      setEditId(null);
-      setIsFormVisible(false);
-      await fetchTopics();
-    } catch (err) {
-      showToast(err?.message || "Failed to save topic", "error");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleEditTopic = (topic) => {
-    setEditId(topic._id);
-    setTitle(topic.title);
-    setIsPremium(topic.isPremium);
-    setIsPublished(topic.isPublished);
-    setIsFormVisible(true);
-  };
-
   const handleDeleteTopic = async (id) => {
     setSaving(true);
     try {
@@ -149,14 +112,6 @@ const Content = () => {
     } finally {
       setSaving(false);
     }
-  };
-
-  const cancelForm = () => {
-    setTitle("");
-    setIsPremium(false);
-    setIsPublished(false);
-    setEditId(null);
-    setIsFormVisible(false);
   };
 
   const handleTogglePremium = async (topic) => {

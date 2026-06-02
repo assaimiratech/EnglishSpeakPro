@@ -241,7 +241,6 @@ const Navbar = () => {
         </AnimatePresence>
       </nav>
 
-      {/* Spacer to prevent content from hiding under fixed navbar */}
       <div className="h-16 md:h-20" />
     </>
   );

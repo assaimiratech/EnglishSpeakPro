@@ -63,12 +63,8 @@ const Register = () => {
       setError("WhatsApp number must be 10 digits");
       return false;
     }
-    // if (!agreeTerms) {
-    //   setError("Please agree to the terms and conditions");
-    //   return false;
-    // }
-    if (!/^[a-zA-Z\s]{3,}$/.test(form.country.trim())) {
-      setError("Please enter your country");
+    if (!form.country?.trim()) {
+      setError("Please select your country");
       return false;
     }
     if (!/^[a-zA-Z\s]{3,}$/.test(form.city.trim())) {
@@ -244,7 +240,7 @@ const Register = () => {
                   </button>
                 </div>
                 <p className="text-xs text-[#5F6B63] dark:text-[var(--muted)] mt-1 transition-colors duration-200">
-                  Must be at least 6 characters
+                  Must be at least 8 characters
                 </p>
               </div>
 
@@ -341,32 +337,6 @@ const Register = () => {
                   />
                 </div>
               </div>
-
-              {/* Terms and Conditions */}
-              {/* <label className="flex items-start gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={agreeTerms}
-                  onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="w-4 h-4 mt-0.5 rounded border-[#E2E8E3] dark:border-[var(--border)] text-[#2E8B57] dark:text-[var(--accent)] focus:ring-[#8FAF9A] dark:focus:ring-[var(--accent)] bg-white dark:bg-[var(--card)]"
-                />
-                <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)] leading-relaxed transition-colors duration-200">
-                  I agree to the{" "}
-                  <Link
-                    to="/terms"
-                    className="text-[#2E8B57] dark:text-[var(--accent)] hover:underline transition-colors"
-                  >
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    to="/privacy"
-                    className="text-[#2E8B57] dark:text-[var(--accent)] hover:underline transition-colors"
-                  >
-                    Privacy Policy
-                  </Link>
-                </span>
-              </label> */}
 
               {/* Submit Button */}
               <motion.button

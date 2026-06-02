@@ -41,11 +41,6 @@ const FeatureSection = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
-          {/* <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-full bg-[#8FAF9A]/10 dark:bg-[#8FAF9A]/20 flex items-center justify-center transition-colors duration-200">
-              <TbBrandGooglePodcasts className="w-6 h-6 text-[#8FAF9A] dark:text-[var(--accent)]" />
-            </div>
-          </div> */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#2C2C2C] dark:text-[var(--text)] tracking-tight transition-colors duration-200">
             Why Choose EnglishSpeakPro?
           </h2>
@@ -115,16 +110,6 @@ const FeatureSection = () => {
             </div>
           ))}
         </div>
-
-        {/* Bottom Trust Badge */}
-        {/* <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-2 bg-[#F1F4F1] dark:bg-[var(--card)] rounded-full px-4 py-2 transition-colors duration-200">
-            <FiAward className="w-4 h-4 text-[#2E8B57] dark:text-[var(--accent)]" />
-            <span className="text-xs text-[#5F6B63] dark:text-[var(--muted)] transition-colors duration-200">
-              Trusted by 10,000+ English learners worldwide
-            </span>
-          </div>
-        </div> */}
       </div>
     </section>
   );

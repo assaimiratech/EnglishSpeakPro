@@ -71,7 +71,43 @@ const Profile = () => {
     }
   };
 
+  // const handleChange = (e) => {
+  //   setForm({ ...form, [e.target.name]: e.target.value });
+  //   setToast("");
+  // };
+
+  const validateForm = () => {
+    if (
+      !/^[a-zA-Z\s]{3,}$/.test(profileForm.name.trim()) &&
+      profileForm.name.length < 3
+    ) {
+      showToast("Please enter your full name", "error");
+      return;
+    }
+    if (!profileForm.email.includes("@gmail.com")) {
+      showToast("Please enter a valid email address", "error");
+      return;
+    }
+
+    if (profileForm.whatsapp.length !== 10) {
+      showToast("WhatsApp number must be 10 digits", "error");
+      return;
+    }
+    if (!profileForm.country?.trim()) {
+      showToast("Please select your country", "error");
+      return;
+    }
+
+    if (!/^[a-zA-Z\s]{3,}$/.test(profileForm.city.trim())) {
+      showToast("Please enter your city", "error");
+      return;
+    }
+    return;
+  };
+
   const handleUpdateProfile = async () => {
+    if (!validateForm()) return;
+
     setIsLoading(true);
     try {
       await updateProfile(profileForm);
@@ -93,7 +129,14 @@ const Profile = () => {
       showToast("Please fill in both password fields", "warning");
       return;
     }
+
+    if (passwordForm.newPassword.length < 8) {
+      showToast("New password must be at least 8 characters long", "warning");
+      return;
+    }
+
     setIsLoading(true);
+
     try {
       await changePassword(passwordForm);
       showToast("Password updated successfully!", "success");

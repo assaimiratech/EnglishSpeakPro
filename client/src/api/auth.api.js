@@ -23,20 +23,6 @@ export const loginUser = async (data) => {
   return res.data;
 };
 
-// export const loginUser = async (data) => {
-//   const res = await api.post("/auth/login", data);
-
-//   // ✅ SAVE USER AFTER LOGIN
-//   if (res.data?.user) {
-//     localStorage.setItem("user", JSON.stringify(res.data.user));
-//   }
-
-//   if (res.data?.token) {
-//     localStorage.setItem("token", res.data.token);
-//   }
-
-//   return res.data;
-// };
 export const getMe = async () => {
   const res = await api.get("/auth/me");
   return res.data;
@@ -52,7 +38,6 @@ export const updateProfile = async (data) => {
 
 // CHANGE PASSWORD
 export const changePassword = async (data) => {
-  // Accept either { currentPassword, newPassword } or { oldPassword, newPassword }
   const payload = {
     oldPassword: data.oldPassword || data.currentPassword,
     newPassword: data.newPassword,

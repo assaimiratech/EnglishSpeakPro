@@ -142,29 +142,26 @@ const Lessons = () => {
             total={lessons.length}
             progress={progress}
           />
-
-          {/* NEW: Global Display Answers Toggle Button - Placed directly */}
-          <div className="flex justify-end h-10">
-            <button
-              onClick={() => setGlobalShowAnswers(!globalShowAnswers)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-[var(--surface)] border border-[#E2E8E3] dark:border-[var(--border)] text-[#5F6B63] dark:text-[var(--muted)] hover:border-[#2E8B57] dark:hover:border-[var(--accent)] hover:text-[#2E8B57] dark:hover:text-[var(--accent)] transition-all duration-200 shadow-sm hover:shadow-md"
-              aria-label="Toggle display all answers"
-            >
-              {globalShowAnswers ? (
-                <>
-                  <FiEyeOff className="w-4 h-4" />
-                  <span className="text-sm font-medium">Hide All Answers</span>
-                </>
-              ) : (
-                <>
-                  <FiEye className="w-4 h-4" />
-                  <span className="text-sm font-medium">
-                    Display All Answers
-                  </span>
-                </>
-              )}
-            </button>
-          </div>
+        </div>
+        {/* NEW: Global Display Answers Toggle Button - Placed directly */}
+        <div className="flex justify-end h-10">
+          <button
+            onClick={() => setGlobalShowAnswers(!globalShowAnswers)}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-[var(--surface)] border border-[#E2E8E3] dark:border-[var(--border)] text-[#5F6B63] dark:text-[var(--muted)] hover:border-[#2E8B57] dark:hover:border-[var(--accent)] hover:text-[#2E8B57] dark:hover:text-[var(--accent)] transition-all duration-200 shadow-sm hover:shadow-md"
+            aria-label="Toggle display all answers"
+          >
+            {globalShowAnswers ? (
+              <>
+                <FiEyeOff className="w-4 h-4" />
+                <span className="text-sm font-medium">Hide All Answers</span>
+              </>
+            ) : (
+              <>
+                <FiEye className="w-4 h-4" />
+                <span className="text-sm font-medium">Display All Answers</span>
+              </>
+            )}
+          </button>
         </div>
 
         {/* Question Card */}

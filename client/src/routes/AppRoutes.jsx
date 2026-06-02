@@ -1,69 +1,76 @@
+import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import Landing from "../pages/public/Landing";
-import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
-
-import Topics from "../pages/app/Topics";
-import Lessons from "../pages/app/Lessons";
-import Settings from "../pages/app/Settings";
-
-import AppLayout from "../components/layout/AppLayout";
-import Profile from "../pages/public/Profile";
-import ProtectedRoute from "./ProtectedRoute";
+const Landing = lazy(() => import("../pages/public/Landing"));
+const Login = lazy(() => import("../pages/auth/Login"));
+const Register = lazy(() => import("../pages/auth/Register"));
+const Topics = lazy(() => import("../pages/app/Topics"));
+const Lessons = lazy(() => import("../pages/app/Lessons"));
+const Settings = lazy(() => import("../pages/app/Settings"));
+const Profile = lazy(() => import("../pages/public/Profile"));
+const AppLayout = lazy(() => import("../components/layout/AppLayout"));
+const ProtectedRoute = lazy(() => import("./ProtectedRoute"));
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      {/* PUBLIC */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route
-        path="/profile"
-        element={
-          <AppLayout>
-            <Profile />
-          </AppLayout>
-        }
-      />
-
-      {/* USER APP */}
-      <Route
-        path="/topics"
-        element={
-          <ProtectedRoute>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center p-6 text-center">
+          Loading app...
+        </div>
+      }
+    >
+      <Routes>
+        {/* PUBLIC */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/profile"
+          element={
             <AppLayout>
-              <Topics />
+              <Profile />
             </AppLayout>
-          </ProtectedRoute>
-        }
-      />
+          }
+        />
 
-      <Route
-        path="/lessons/:topicId"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Lessons />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <Settings />
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
+        {/* USER APP */}
+        <Route
+          path="/topics"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Topics />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
 
-      {/* fallback */}
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        <Route
+          path="/topics/:topicId/lessons"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Lessons />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Settings />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Suspense>
   );
 };
 

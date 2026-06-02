@@ -1,16 +1,23 @@
+import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import AppRoutes from "./routes/AppRoutes";
-import AdminRoutes from "./routes/AdminRoutes";
-import Lessons from "./pages/admin/Lessons";
+const AppRoutes = lazy(() => import("./routes/AppRoutes"));
+const AdminRoutes = lazy(() => import("./routes/AdminRoutes"));
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/*" element={<AppRoutes />} />
-      <Route path="/admin/*" element={<AdminRoutes />} />
-      <Route path="/topics/:topicId/lessons" element={<Lessons />} />
-    </Routes>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center p-6 text-center">
+          Loading application...
+        </div>
+      }
+    >
+      <Routes>
+        <Route path="/*" element={<AppRoutes />} />
+        <Route path="/admin/*" element={<AdminRoutes />} />
+      </Routes>
+    </Suspense>
   );
 };
 

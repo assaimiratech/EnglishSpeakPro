@@ -21,11 +21,11 @@ const AppRoutes = () => {
     >
       <Routes>
         {/* PUBLIC */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="" element={<Landing />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
         <Route
-          path="/profile"
+          path="profile"
           element={
             <AppLayout>
               <Profile />
@@ -35,7 +35,7 @@ const AppRoutes = () => {
 
         {/* USER APP */}
         <Route
-          path="/topics"
+          path="topics"
           element={
             <ProtectedRoute>
               <AppLayout>
@@ -46,7 +46,7 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="/topics/:topicId/lessons"
+          path="topics/:topicId/lessons"
           element={
             <ProtectedRoute>
               <AppLayout>
@@ -56,7 +56,7 @@ const AppRoutes = () => {
           }
         />
         {/* fallback */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="" />} />
       </Routes>
     </Suspense>
   );

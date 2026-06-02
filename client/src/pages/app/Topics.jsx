@@ -15,6 +15,7 @@ import {
 import { HiOutlineLockOpen } from "react-icons/hi2";
 import { motion } from "framer-motion";
 import { HiSparkles } from "react-icons/hi2";
+import toast from "react-hot-toast";
 
 const Topics = () => {
   const [topics, setTopics] = useState([]);
@@ -42,12 +43,15 @@ const Topics = () => {
   const handleClick = (topic) => {
     const locked = topic.isPremium && !user?.isPremium;
     if (locked) {
-      navigate("/#pricing");
-    } else {
-      navigate(`/topics/${topic._id}/lessons`, {
-        state: { topicTitle: topic.title },
-      });
+      toast.error(
+        "This topic is premium. Please upgrade to access premium lessons.",
+      );
+      return;
     }
+
+    navigate(`/topics/${topic._id}/lessons`, {
+      state: { topicTitle: topic.title },
+    });
   };
 
   if (loading)

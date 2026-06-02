@@ -87,7 +87,7 @@ const Register = () => {
       const data = await registerUser(form);
       setToken(data.token);
       toast.success("Account created successfully! Welcome aboard! 🎉");
-      navigate("/topics");
+      navigate("/login");
     } catch (err) {
       const message = err.message || "Registration failed. Please try again.";
       setError(message);

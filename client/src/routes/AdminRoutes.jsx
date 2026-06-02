@@ -4,7 +4,6 @@ import AdminLayout from "../components/layout/AdminLayout";
 import AdminRoute from "./AdminRoute";
 
 const Users = lazy(() => import("../pages/admin/Users"));
-const Lessons = lazy(() => import("../pages/admin/Lessons"));
 const Settings = lazy(() => import("../pages/admin/Settings"));
 const PremiumRequests = lazy(() => import("../pages/admin/PremiumRequests"));
 const Content = lazy(() => import("../pages/admin/Content"));

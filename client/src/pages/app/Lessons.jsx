@@ -16,6 +16,7 @@ import StickyPlayer from "../../components/lesson/StickyPlayer";
 import AnswerToggle from "../../components/lesson/AnswerToggle";
 import LessonNavigation from "../../components/lesson/LessonNavigation";
 import { getLessonsByTopic } from "../../api/lessons.api";
+
 const getAudioUrl = (url) => {
   if (!url) return "";
 
@@ -223,7 +224,7 @@ const Lessons = () => {
       {lesson.audio && (
         <StickyPlayer
           key={`audio-${index}`}
-          src={lesson.audio}
+          src={getAudioUrl(lesson.audio)}
           title={"Listen to Question"}
         />
       )}

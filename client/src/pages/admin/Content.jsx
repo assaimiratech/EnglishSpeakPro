@@ -79,6 +79,18 @@ const Content = () => {
   const [editingLessonIndex, setEditingLessonIndex] = useState(null);
   const [editingLessonId, setEditingLessonId] = useState(null);
 
+  const getAudioUrl = (url) => {
+    if (!url) return "";
+
+    if (url.startsWith("http")) return url;
+
+    const base =
+      import.meta.env.VITE_API_BASE_URL ||
+      "https://englishspeakpro-e7ve.onrender.com";
+
+    return `${base}${url}`;
+  };
+
   useEffect(() => {
     fetchTopics();
   }, []);
@@ -248,11 +260,8 @@ const Content = () => {
       // SAFE filename fallback
       const filename = file.name || "audio";
 
-      updateLessonField(index, "audioUrl", res.fileUrl);
-
-      // IMPORTANT: no backend prefix anymore
       updateLessonField(index, "audioPreview", res.fileUrl);
-
+      updateLessonField(index, "audioUrl", res.fileUrl);
       updateLessonField(index, "audioName", filename);
       showToast("Audio uploaded successfully!", "success");
 

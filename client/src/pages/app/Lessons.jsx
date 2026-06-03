@@ -27,6 +27,7 @@ const getAudioUrl = (url) => {
 
   return `${base}${url}`;
 };
+
 const Lessons = () => {
   const location = useLocation();
   const { topicId } = useParams();

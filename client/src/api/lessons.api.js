@@ -14,10 +14,16 @@ export const getAllLessons = (page = 1, topicFilter = "") => {
   });
 };
 
-export const uploadAudio = async (file) => {
+export const uploadAudio = async (file, onUploadProgress) => {
   const formData = new FormData();
   formData.append("audio", file);
 
-  const res = await api.post("/uploads/", formData);
+  const res = await api.post("/lessons/upload/audio", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress,
+  });
+
   return res.data;
 };

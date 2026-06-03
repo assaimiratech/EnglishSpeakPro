@@ -162,9 +162,7 @@ const Content = () => {
             : "",
           // transient fields for client-only
           file: null,
-          audioPreview: l.audioUrl
-            ? `https://englishspeakpro-e7ve.onrender.com${l.audioUrl}`
-            : null,
+          audioPreview: l.audioUrl ? getAudioUrl(l.audioUrl) : null,
         }));
 
         setLessons(mapped);
@@ -247,16 +245,14 @@ const Content = () => {
         throw new Error("Upload failed: no file URL returned");
       }
 
-      const filename = res.fileUrl
-        ? decodeURIComponent(res.fileUrl.split("/").pop())
-        : file.name || "audio";
+      // SAFE filename fallback
+      const filename = file.name || "audio";
 
       updateLessonField(index, "audioUrl", res.fileUrl);
-      updateLessonField(
-        index,
-        "audioPreview",
-        `https://englishspeakpro-e7ve.onrender.com${res.fileUrl}`,
-      );
+
+      // IMPORTANT: no backend prefix anymore
+      updateLessonField(index, "audioPreview", res.fileUrl);
+
       updateLessonField(index, "audioName", filename);
       showToast("Audio uploaded successfully!", "success");
 
@@ -730,10 +726,9 @@ const Content = () => {
                       <div className="mt-3">
                         <audio
                           controls
-                          src={
-                            lesson.audioPreview ||
-                            `https://englishspeakpro-e7ve.onrender.com${lesson.audioUrl}`
-                          }
+                          src={getAudioUrl(
+                            lesson.audioPreview || lesson.audioUrl,
+                          )}
                           className="w-full max-w-full sm:max-w-md rounded-lg"
                         />
                         <div className="mt-1 flex items-center gap-2 text-[12px] text-green-600">
@@ -745,7 +740,9 @@ const Content = () => {
                           )}
                           {lesson.audioUrl && (
                             <a
-                              href={`https://englishspeakpro-e7ve.onrender.com${lesson.audioUrl}`}
+                              src={getAudioUrl(
+                                lesson.audioPreview || lesson.audioUrl,
+                              )}
                               target="_blank"
                               rel="noreferrer"
                               className="text-xs text-blue-600 underline ml-2"

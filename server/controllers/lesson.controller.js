@@ -1,5 +1,7 @@
 import Lesson from "../models/Lesson.js";
 import Topic from "../models/Topic.js";
+import cloudinary from "../config/cloudinary.js";
+import streamifier from "streamifier";
 
 // CREATE LESSON (ADMIN)
 export const createLesson = async (req, res) => {
@@ -131,17 +133,47 @@ export const getAllLessons = async (req, res) => {
   }
 };
 
+// export const uploadAudio = async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ message: "No file uploaded" });
+//     }
+
+//     const fileUrl = `/uploads/${req.file.filename}`;
+
+//     res.status(200).json({
+//       message: "Audio uploaded successfully",
+//       fileUrl,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 export const uploadAudio = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const fileUrl = `/uploads/${req.file.filename}`;
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "audio_uploads",
+          resource_type: "video",
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        },
+      );
+
+      streamifier.createReadStream(req.file.buffer).pipe(stream);
+    });
 
     res.status(200).json({
       message: "Audio uploaded successfully",
-      fileUrl,
+      fileUrl: result.secure_url,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

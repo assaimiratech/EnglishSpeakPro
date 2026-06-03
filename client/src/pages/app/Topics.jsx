@@ -43,9 +43,7 @@ const Topics = () => {
   const handleClick = (topic) => {
     const locked = topic.isPremium && !user?.isPremium;
     if (locked) {
-      toast.error(
-        "This topic is premium. Please upgrade to access premium lessons.",
-      );
+      navigate("/#pricing");
       return;
     }
 

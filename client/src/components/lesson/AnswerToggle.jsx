@@ -6,6 +6,7 @@ import {
   FiChevronUp,
   FiCopy,
   FiCheck,
+  FiCheckCircle,
 } from "react-icons/fi";
 
 const AnswerToggle = ({
@@ -99,20 +100,28 @@ const AnswerToggle = ({
         >
           {show ? (
             <>
-              <FiEyeOff
+              {/* <FiEyeOff
                 className={`${sizeClasses[size].icon} transition-transform duration-200`}
               />
-              <span>Hide Answer</span>
+              <span>Hide Answer</span> */}
+              <FiCheckCircle
+                className={`${sizeClasses[size].icon} transition-transform duration-200`}
+              />
+              <span>YOUR PRACTICE ANSWER</span>
               <FiChevronUp
                 className={`${sizeClasses[size].icon} transition-transform duration-200 ${animate ? "rotate-0" : ""}`}
               />
             </>
           ) : (
             <>
-              <FiEye
+              {/* <FiEye
                 className={`${sizeClasses[size].icon} transition-transform duration-200`}
               />
-              <span>Show Answer</span>
+              <span>Show Answer</span> */}
+              <FiCheckCircle
+                className={`${sizeClasses[size].icon} transition-transform duration-200`}
+              />
+              <span>YOUR PRACTICE ANSWER</span>
               <FiChevronDown
                 className={`${sizeClasses[size].icon} transition-transform duration-200 ${animate ? "rotate-0" : ""}`}
               />

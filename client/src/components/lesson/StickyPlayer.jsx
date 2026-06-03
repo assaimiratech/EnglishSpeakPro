@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import {
   FiPlay,
   FiPause,
@@ -8,78 +8,42 @@ import {
   FiChevronDown,
   FiMinimize2,
   FiHeadphones,
+  FiAlertCircle,
 } from "react-icons/fi";
+import { useAudioPlayback } from "../../hooks/useAudioPlayback";
 
 const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [volume, setVolume] = useState(1);
-  const [isMuted, setIsMuted] = useState(false);
+  const {
+    audioRef,
+    isPlaying,
+    currentTime,
+    duration,
+    speed,
+    volume,
+    isMuted,
+    error,
+    togglePlay,
+    changeSpeed,
+    changeVolume,
+    toggleMute,
+  } = useAudioPlayback(src);
+
   const [isMinimized, setIsMinimized] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
-    const handleLoadedMetadata = () => setDuration(audio.duration);
-    const handleEnded = () => setIsPlaying(false);
-
-    audio.addEventListener("timeupdate", handleTimeUpdate);
-    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
-    audio.addEventListener("ended", handleEnded);
-
-    return () => {
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
-      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      audio.removeEventListener("ended", handleEnded);
-    };
-  }, []);
-
-  const togglePlay = () => {
-    if (!audioRef.current) return;
-
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
 
   const handleSpeed = (value) => {
     const val = Number(value);
-    setSpeed(val);
-    if (audioRef.current) {
-      audioRef.current.playbackRate = val;
-    }
+    changeSpeed(val);
     setShowSpeedMenu(false);
   };
 
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-    setIsMuted(newVolume === 0);
-  };
-
-  const toggleMute = () => {
-    if (isMuted) {
-      audioRef.current.volume = volume || 0.5;
-      setIsMuted(false);
-    } else {
-      audioRef.current.volume = 0;
-      setIsMuted(true);
-    }
+    changeVolume(newVolume);
   };
 
   const formatTime = (time) => {
+    if (!isFinite(time)) return "0:00";
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
@@ -87,49 +51,29 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
 
   const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-  if (isMinimized) {
-    return (
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={() => setIsMinimized(false)}
-          className="
-            group
-            flex items-center gap-2
-            bg-white
-            border
-            border-[#E2E8E3]
-            rounded-full
-            px-3 py-2
-            shadow-lg
-            hover:shadow-xl
-            transition-all
-            duration-200
-            hover:scale-105
-          "
-        >
-          <div className="w-2 h-2 bg-[#2E8B57] rounded-full animate-pulse" />
-          <span className="text-xs font-medium text-[#2C2C2C]">{title}</span>
-          <FiPlay className="w-3 h-3 text-[#8FAF9A]" />
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Hidden audio element */}
-      <audio ref={audioRef} src={src} preload="metadata" />
+      {/* Hidden audio element managed by hook */}
+      <audio ref={audioRef} preload="metadata" />
 
       {/* Progress Bar (top edge) */}
-      <div className="h-1 bg-[#E2E8E3]">
+      <div className="h-1 bg-[#E2E8E3] cursor-pointer group">
         <div
-          className="h-full bg-[#8FAF9A] transition-all duration-300"
-          style={{ width: `${(currentTime / duration) * 100}%` }}
+          className="h-full bg-[#8FAF9A] transition-all duration-300 group-hover:bg-[#2E8B57]"
+          style={{ width: `${(currentTime / (duration || 100)) * 100}%` }}
         />
       </div>
 
       {/* Main Player */}
       <div className="bg-white border-t border-[#E2E8E3] shadow-lg">
+        {/* Error Message - if any */}
+        {error && (
+          <div className="px-4 py-2 bg-amber-50 border-b border-amber-100 flex items-center gap-2 text-sm text-amber-700">
+            <FiAlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex flex-col sm:flex-row items-center gap-3">
             {/* Play Button & Title */}
@@ -141,6 +85,7 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
                   rounded-full
                   bg-[#2E8B57]
                   hover:bg-[#257149]
+                  active:scale-95
                   text-white
                   flex items-center justify-center
                   transition-all
@@ -160,10 +105,12 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
               </button>
 
               <div className="min-w-0 flex-1">
-                <FiHeadphones />
-                <p className="text-sm font-medium text-[#2C2C2C] truncate">
-                  {title}
-                </p>
+                <div className="flex items-center gap-1">
+                  <FiHeadphones className="w-4 h-4 text-[#8FAF9A] flex-shrink-0" />
+                  <p className="text-sm font-medium text-[#2C2C2C] truncate">
+                    {title}
+                  </p>
+                </div>
                 <p className="text-xs text-[#5F6B63]">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </p>
@@ -175,7 +122,7 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={toggleMute}
-                  className="p-2 rounded-lg text-[#5F6B63] hover:bg-[#F1F4F1] transition-all duration-200"
+                  className="p-2 rounded-lg text-[#5F6B63] hover:bg-[#F1F4F1] active:scale-95 transition-all duration-200"
                   aria-label={isMuted ? "Unmute" : "Mute"}
                 >
                   {isMuted || volume === 0 ? (
@@ -193,6 +140,7 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
                   value={isMuted ? 0 : volume}
                   onChange={handleVolumeChange}
                   className="w-20 h-1 rounded-lg appearance-none cursor-pointer bg-[#E2E8E3] accent-[#8FAF9A]"
+                  aria-label="Volume control"
                 />
               </div>
 
@@ -209,6 +157,7 @@ const StickyPlayer = ({ src, title = "Audio Lesson", onClose }) => {
                     bg-[#F1F4F1]
                     text-[#2C2C2C]
                     hover:bg-[#E2E8E3]
+                    active:scale-95
                     transition-all
                     duration-200
                   "

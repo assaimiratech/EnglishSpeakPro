@@ -9,6 +9,7 @@ import {
   FiEye,
   FiEyeOff,
 } from "react-icons/fi";
+import { GoDotFill } from "react-icons/go";
 
 import LessonHeader from "../../components/lesson/LessonHeader";
 import StickyPlayer from "../../components/lesson/StickyPlayer";
@@ -166,7 +167,7 @@ const Lessons = () => {
         {/* Question Card */}
         <div className="mt-6 bg-white dark:bg-[var(--card)] rounded-2xl shadow-md border border-[#E2E8E3] dark:border-[var(--border)] overflow-hidden transition-all duration-200 hover:shadow-lg dark:hover:shadow-xl">
           {/* Question Content */}
-          <div className="p-6">
+          <div className="p-6 pb-2">
             <p className="text-lg sm:text-xl md:text-2xl font-semibold text-[#2C2C2C] dark:text-[var(--text)] leading-relaxed whitespace-normal break-words">
               {lesson.question}
             </p>
@@ -182,6 +183,12 @@ const Lessons = () => {
               }}
               answer={lesson.answer}
             />
+            <div className="flex justify-end items-center mt-3">
+              <p className="text-xs font-semibold text-[#545d55] dark:text-[var(--text)]">
+                SPEAK THIS ALOUD
+              </p>
+              <GoDotFill className="text-[#4ecb84]" />
+            </div>
           </div>
         </div>
         <LessonNavigation
@@ -206,8 +213,18 @@ const Lessons = () => {
       </div>
 
       {/* Sticky Audio Player */}
+      {/* Audio automatically plays when question changes. The useAudioPlayback hook handles:
+          - Auto-play on new question load
+          - Stopping previous audio before starting new one
+          - Mobile autoplay restrictions with graceful fallback
+          - Proper resource cleanup
+          - Promise-based play() error handling */}
       {lesson.audio && (
-        <StickyPlayer src={lesson.audio} title={"Listen to Question"} />
+        <StickyPlayer
+          key={`audio-${index}`}
+          src={lesson.audio}
+          title={"Listen to Question"}
+        />
       )}
     </div>
   );

@@ -43,7 +43,7 @@ const Topics = () => {
   const handleClick = (topic) => {
     const locked = topic.isPremium && !user?.isPremium;
     if (locked) {
-      navigate("/#pricing");
+      navigate("/");
       return;
     }
 

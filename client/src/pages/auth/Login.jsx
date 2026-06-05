@@ -26,7 +26,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const { applyTheme } = useSettingsStore();
 
   const handleChange = (e) => {
@@ -42,13 +41,6 @@ const Login = () => {
     try {
       const data = await loginUser(form);
       setToken(data.token);
-
-      if (rememberMe) {
-        localStorage.setItem("rememberedEmail", form.email);
-      } else {
-        localStorage.removeItem("rememberedEmail");
-      }
-
       toast.success("Login successful! Welcome back!");
 
       if (data.user?.theme) {
@@ -74,15 +66,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
-  // Load remembered email on mount
-  useState(() => {
-    const remembered = localStorage.getItem("rememberedEmail");
-    if (remembered) {
-      setForm((prev) => ({ ...prev, email: remembered }));
-      setRememberMe(true);
-    }
-  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F7F9F7] via-white to-[#F7F9F7] dark:from-[var(--surface)] dark:via-[var(--bg)] dark:to-[var(--surface)] relative overflow-hidden py-8 px-4 transition-colors duration-200">
